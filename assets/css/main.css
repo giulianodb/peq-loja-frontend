@@ -1,0 +1,48 @@
+@import 'primeicons/primeicons.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans text-primary-900 bg-white antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-coral text-white
+           font-medium rounded-lg transition-all duration-300
+           hover:bg-moss-500 hover:shadow-md active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-coral
+           text-coral font-medium rounded-lg transition-all duration-300
+           hover:bg-coral hover:text-white;
+  }
+
+  .section-title {
+    @apply font-serif text-3xl md:text-4xl text-teal tracking-tight;
+  }
+
+  .card-product {
+    @apply bg-white rounded-xl overflow-hidden border border-border
+           transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+}
+
+/* PrimeVue overrides */
+.p-button {
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.p-menubar {
+  border: none !important;
+  background: transparent !important;
+}
