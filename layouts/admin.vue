@@ -69,6 +69,7 @@ const menuItems = [
   { to: '/admin/produtos', icon: 'pi pi-box', label: 'Produtos' },
   { to: '/admin/pedidos', icon: 'pi pi-shopping-bag', label: 'Pedidos' },
   { to: '/admin/checkouts', icon: 'pi pi-megaphone', label: 'Checkouts' },
+  { to: '/admin/categorias', icon: 'pi pi-tag', label: 'Categorias' },
   { to: '/admin/cupons', icon: 'pi pi-ticket', label: 'Cupons' },
   { to: '/admin/avaliacoes', icon: 'pi pi-star', label: 'Avaliações' },
   { to: '/admin/webhook-logs', icon: 'pi pi-history', label: 'Webhooks' },
