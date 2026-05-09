@@ -64,6 +64,7 @@
             v-if="product.imageUrl"
             :src="apiBase + product.imageUrl"
             :alt="product.productName"
+            loading="lazy"
             class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
           />
           <div

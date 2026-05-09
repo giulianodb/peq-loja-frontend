@@ -142,6 +142,7 @@
                 <img
                   v-if="bump.productImageUrl"
                   :src="imgUrl(bump.productImageUrl)"
+                  loading="lazy"
                   class="w-14 h-14 rounded-lg object-cover flex-shrink-0 hidden sm:block"
                 />
                 <div class="flex-1 min-w-0">
@@ -290,6 +291,7 @@
                   <img
                     v-if="funnel.product.imageUrl"
                     :src="imgUrl(funnel.product.imageUrl)"
+                    loading="lazy"
                     class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
                   />
                   <div class="min-w-0">

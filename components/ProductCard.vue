@@ -5,6 +5,7 @@
         v-if="product.imageUrl"
         :src="imageUrl"
         :alt="product.name"
+        loading="lazy"
         class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
       />
       <div

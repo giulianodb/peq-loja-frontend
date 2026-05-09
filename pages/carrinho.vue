@@ -29,6 +29,7 @@
               v-if="item.product.imageUrl"
               :src="getImageUrl(item.product.imageUrl)"
               :alt="item.product.name"
+              loading="lazy"
               class="w-full h-full object-cover"
             />
             <div v-else class="w-full h-full flex items-center justify-center">

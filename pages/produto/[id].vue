@@ -48,6 +48,7 @@
               <div class="relative w-full h-full">
                 <img
                   :src="`https://img.youtube.com/vi/${extractYoutubeId(item.url)}/hqdefault.jpg`"
+                  loading="lazy"
                   class="w-full h-full object-cover"
                 />
                 <div class="absolute inset-0 flex items-center justify-center bg-black/30">
@@ -59,6 +60,7 @@
               <img
                 :src="resolveUrl(item.url)"
                 :alt="`${product.name} - ${index + 1}`"
+                loading="lazy"
                 class="w-full h-full object-cover"
               />
             </template>
