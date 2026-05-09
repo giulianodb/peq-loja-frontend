@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 36" fill="none">
+  <!-- Ícone MP -->
+  <rect width="36" height="36" rx="7" fill="#009EE3"/>
+  <text x="18" y="25" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="16" fill="white">MP</text>
+
+  <!-- mercado -->
+  <text x="46" y="15" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#009EE3" letter-spacing="0.3">mercado</text>
+  <!-- pago -->
+  <text x="46" y="29" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#333333" letter-spacing="0.3">pago</text>
+</svg>

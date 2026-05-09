@@ -149,7 +149,10 @@
 
           <!-- Pagamento -->
           <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
-            <h2 class="font-serif text-lg text-teal mb-5">Pagamento</h2>
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="font-serif text-lg text-teal">Pagamento</h2>
+              <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-7 opacity-90" />
+            </div>
 
             <!-- Tabs -->
             <div class="flex border border-sand-200 rounded-xl overflow-hidden mb-6">
