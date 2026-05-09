@@ -256,6 +256,8 @@
             {{ submitting ? 'Processando...' : `Finalizar Compra  ${formatPrice(orderTotal)}` }}
           </button>
 
+          <CheckoutTrustBar />
+
           <p v-if="error" class="text-red-500 text-sm text-center">
             <i class="pi pi-exclamation-circle mr-1" /> {{ error }}
           </p>

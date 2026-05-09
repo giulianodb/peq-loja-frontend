@@ -221,6 +221,8 @@
             {{ submitting ? 'Processando...' : `Finalizar Compra  ${formatPrice(finalTotal)}` }}
           </button>
 
+          <CheckoutTrustBar />
+
           <p v-if="error" class="text-red-500 text-sm text-center">
             <i class="pi pi-exclamation-circle mr-1" /> {{ error }}
           </p>
@@ -258,10 +260,6 @@
                 <span class="font-serif text-teal text-lg">Total</span>
                 <span class="text-2xl font-bold text-coral">{{ formatPrice(finalTotal) }}</span>
               </div>
-            </div>
-            <div class="mt-6 flex items-center gap-2 text-xs text-steel">
-              <i class="pi pi-lock text-teal" />
-              <span>Pagamento 100% seguro via MercadoPago</span>
             </div>
           </div>
         </div>
