@@ -93,10 +93,19 @@
           </span>
         </div>
 
+        <div class="mt-4">
+          <button
+            @click="addToCart"
+            :disabled="product.stock <= 0"
+            class="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <i class="pi pi-shopping-bag mr-2" />
+            {{ product.stock > 0 ? 'Adicionar ao Carrinho' : 'Esgotado' }}
+          </button>
+        </div>
+
         <div class="mt-6 border-t border-border pt-6">
-          <p class="text-primary-700 leading-relaxed whitespace-pre-line">
-            {{ product.description }}
-          </p>
+          <div class="product-description text-primary-700 leading-relaxed" v-html="product.description" />
         </div>
 
         <!-- Add to cart -->
@@ -433,6 +442,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.product-description :deep(strong) { font-weight: 700; }
+.product-description :deep(em) { font-style: italic; }
+.product-description :deep(u) { text-decoration: underline; }
+.product-description :deep(ul) { list-style: disc; padding-left: 1.25rem; margin: 0.5rem 0; }
+.product-description :deep(ol) { list-style: decimal; padding-left: 1.25rem; margin: 0.5rem 0; }
+.product-description :deep(li) { margin: 0.25rem 0; }
+.product-description :deep(p) { margin: 0.5rem 0; }
+.product-description :deep(br) { display: block; content: ''; }
+.product-description :deep(a) { color: #e07a5f; text-decoration: underline; }
+.product-description :deep(h1),
+.product-description :deep(h2),
+.product-description :deep(h3) { font-weight: 700; margin: 0.75rem 0 0.25rem; }
+
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.3s ease;
