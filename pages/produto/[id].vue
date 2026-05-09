@@ -104,6 +104,11 @@
             <i class="pi pi-shopping-bag mr-2" />
             {{ product.stock > 0 ? 'Adicionar ao Carrinho' : 'Esgotado' }}
           </button>
+          <div v-if="added" class="mt-4 flex items-center gap-2 text-coral text-sm">
+            <i class="pi pi-check-circle" />
+            Adicionado ao carrinho!
+            <NuxtLink to="/carrinho" class="underline font-medium">Ver carrinho</NuxtLink>
+          </div>
         </div>
 
         <div class="mt-6 border-t border-border pt-6">
