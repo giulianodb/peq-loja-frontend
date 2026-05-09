@@ -90,7 +90,13 @@
 
           <!-- Dados do cliente -->
           <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
-            <h2 class="font-serif text-lg text-teal mb-5">Dados Pessoais</h2>
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="font-serif text-lg text-teal">Dados Pessoais</h2>
+              <div class="flex items-center gap-1.5 text-green-600 bg-green-50 border border-green-100 rounded-full px-3 py-1">
+                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-5 opacity-80" />
+              </div>
+            </div>
             <div class="grid sm:grid-cols-2 gap-4">
               <div class="sm:col-span-2">
                 <label class="checkout-label">Nome completo *</label>
@@ -191,7 +197,10 @@
           <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
             <div class="flex items-center justify-between mb-5">
               <h2 class="font-serif text-lg text-teal">Pagamento</h2>
-              <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-7 opacity-90" />
+              <div class="flex items-center gap-1.5 text-green-600 bg-green-50 border border-green-100 rounded-full px-3 py-1">
+                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-5 opacity-80" />
+              </div>
             </div>
 
             <div class="flex border border-sand-200 rounded-xl overflow-hidden mb-6">
