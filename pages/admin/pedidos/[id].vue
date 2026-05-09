@@ -68,6 +68,19 @@
             </select>
           </div>
 
+          <!-- Reembolso -->
+          <div v-if="order.status === 'CONFIRMED'" class="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Reembolso</h3>
+            <p class="text-xs text-gray-500 mb-3">Devolve o valor ao cliente via MercadoPago. Pode ser total ou parcial.</p>
+            <button
+              @click="showRefundModal = true"
+              class="w-full py-2 px-4 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+            >
+              <i class="pi pi-replay text-xs" />
+              Reembolsar
+            </button>
+          </div>
+
           <!-- Recuperação de carrinho -->
           <div v-if="order.status === 'ABANDONED' && order.recoveryToken" class="bg-orange-50 rounded-xl border border-orange-200 p-6">
             <h3 class="text-sm font-semibold text-orange-700 uppercase tracking-wide mb-3">Recuperação</h3>
@@ -104,6 +117,67 @@
         </div>
       </div>
     </template>
+
+    <!-- Modal de Reembolso -->
+    <Teleport to="body">
+      <div v-if="showRefundModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-semibold text-gray-900">Reembolso — Pedido #{{ order?.id }}</h2>
+            <button @click="closeRefundModal" class="text-gray-400 hover:text-gray-600">
+              <i class="pi pi-times" />
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-gray-50 rounded-lg p-3 text-sm text-gray-600">
+              Total do pedido: <span class="font-semibold text-gray-900">{{ order ? formatCurrency(order.total) : '' }}</span>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Valor do reembolso</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">R$</span>
+                <input
+                  v-model="refundAmountStr"
+                  type="number"
+                  min="0.01"
+                  :max="order?.total"
+                  step="0.01"
+                  placeholder="0,00"
+                  class="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
+                />
+              </div>
+              <p class="text-xs text-gray-400 mt-1">
+                Deixe em branco ou igual ao total para reembolso completo.
+              </p>
+            </div>
+
+            <p v-if="refundError" class="text-sm text-red-600 flex items-center gap-1.5">
+              <i class="pi pi-exclamation-circle" />{{ refundError }}
+            </p>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            <button
+              @click="closeRefundModal"
+              class="flex-1 py-2.5 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              @click="submitRefund"
+              :disabled="refunding"
+              class="flex-1 py-2.5 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              <i v-if="refunding" class="pi pi-spin pi-spinner text-xs" />
+              <i v-else class="pi pi-replay text-xs" />
+              Confirmar reembolso
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -118,6 +192,10 @@ const { $fetch } = useApi()
 const order = ref<Order | null>(null)
 const loading = ref(true)
 const resending = ref(false)
+const showRefundModal = ref(false)
+const refundAmountStr = ref('')
+const refunding = ref(false)
+const refundError = ref('')
 
 const statuses = [
   { value: 'ABANDONED', label: 'Abandonado' },
@@ -126,6 +204,8 @@ const statuses = [
   { value: 'SHIPPED', label: 'Enviado' },
   { value: 'DELIVERED', label: 'Entregue' },
   { value: 'CANCELLED', label: 'Cancelado' },
+  { value: 'REFUNDED', label: 'Reembolsado' },
+  { value: 'PARTIALLY_REFUNDED', label: 'Reembolso parcial' },
 ]
 
 const recoveryUrl = computed(() => {
@@ -166,6 +246,45 @@ async function resendEmail() {
     alert(e?.data?.message || 'Erro ao reenviar email')
   } finally {
     resending.value = false
+  }
+}
+
+function closeRefundModal() {
+  showRefundModal.value = false
+  refundAmountStr.value = ''
+  refundError.value = ''
+}
+
+async function submitRefund() {
+  if (!order.value) return
+  refundError.value = ''
+
+  const amount = refundAmountStr.value ? parseFloat(refundAmountStr.value) : null
+  if (amount !== null && (isNaN(amount) || amount <= 0)) {
+    refundError.value = 'Informe um valor válido maior que zero.'
+    return
+  }
+  if (amount !== null && amount > order.value.total) {
+    refundError.value = `O valor não pode ser maior que o total do pedido (${formatCurrency(order.value.total)}).`
+    return
+  }
+
+  const isTotal = amount === null || amount >= order.value.total
+  const confirmMsg = isTotal
+    ? `Confirma o reembolso TOTAL de ${formatCurrency(order.value.total)}?`
+    : `Confirma o reembolso PARCIAL de ${formatCurrency(amount)}?`
+
+  if (!confirm(confirmMsg)) return
+
+  refunding.value = true
+  try {
+    const params = amount !== null ? `?amount=${amount}` : ''
+    order.value = await $fetch<Order>(`/api/admin/orders/${order.value.id}/refund${params}`, { method: 'POST' })
+    closeRefundModal()
+  } catch (e: any) {
+    refundError.value = e?.data?.message || 'Erro ao processar reembolso. Tente novamente.'
+  } finally {
+    refunding.value = false
   }
 }
 
