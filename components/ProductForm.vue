@@ -123,6 +123,47 @@
         </div>
       </div>
 
+      <!-- YouTube video -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Vídeo do YouTube</label>
+
+        <div v-for="(url, idx) in videoUrls" :key="idx" class="flex items-start gap-3 mb-3">
+          <div v-if="extractVideoId(url)" class="w-32 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 relative group">
+            <img
+              :src="`https://img.youtube.com/vi/${extractVideoId(url)}/hqdefault.jpg`"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+              <div class="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center">
+                <svg viewBox="0 0 24 24" class="w-3 h-3 fill-white ml-0.5"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <input
+              v-model="videoUrls[idx]"
+              type="url"
+              placeholder="https://www.youtube.com/watch?v=..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal/30 focus:border-teal outline-none"
+            />
+          </div>
+
+          <button type="button" @click="removeVideo(idx)" class="mt-1 text-red-400 hover:text-red-600 transition-colors">
+            <i class="pi pi-times text-sm" />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          @click="addVideo"
+          class="inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-teal/50 hover:bg-teal/5 transition-colors"
+        >
+          <i class="pi pi-plus text-xs" /> Adicionar vídeo
+        </button>
+        <p class="text-xs text-gray-400 mt-1">Cole o link do YouTube (ex: youtube.com/watch?v=...)</p>
+      </div>
+
       <!-- Gallery -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Fotos do produto</label>
@@ -282,6 +323,10 @@ const existingImage = ref<string | null>(
 const existingGallery = ref<ProductMedia[]>(
   props.product?.media?.filter(m => m.mediaType === 'IMAGE') || []
 )
+
+const videoUrls = ref<string[]>(
+  props.product?.media?.filter(m => m.mediaType === 'VIDEO').map(m => m.mediaUrl) || []
+)
 const newGalleryFiles = ref<File[]>([])
 const newGalleryPreviews = ref<string[]>([])
 
@@ -311,6 +356,19 @@ onMounted(async () => {
     // ignore
   }
 })
+
+function extractVideoId(url: string): string {
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/)
+  return match?.[1] ?? ''
+}
+
+function addVideo() {
+  videoUrls.value.push('')
+}
+
+function removeVideo(idx: number) {
+  videoUrls.value.splice(idx, 1)
+}
 
 function handleImageSelect(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
@@ -416,7 +474,7 @@ function handleSubmit() {
     stock: form.stock,
     categoryId: form.categoryId,
     active: form.active,
-    videoUrls: [],
+    videoUrls: videoUrls.value.filter(u => u.trim() !== ''),
   }
 
   fd.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }))

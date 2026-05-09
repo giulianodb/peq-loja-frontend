@@ -17,13 +17,7 @@
         <!-- Main image/video -->
         <div class="aspect-square bg-light rounded-2xl overflow-hidden mb-3">
           <template v-if="activeMedia && activeMedia.type === 'VIDEO'">
-            <iframe
-              :src="embedUrl(activeMedia.url)"
-              class="w-full h-full"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            />
+            <YoutubeEmbed :url="activeMedia.url" title="Vídeo do produto" />
           </template>
           <template v-else>
             <img
@@ -51,8 +45,14 @@
             ]"
           >
             <template v-if="item.type === 'VIDEO'">
-              <div class="w-full h-full bg-primary-800 flex items-center justify-center">
-                <i class="pi pi-play-circle text-white text-xl" />
+              <div class="relative w-full h-full">
+                <img
+                  :src="`https://img.youtube.com/vi/${extractYoutubeId(item.url)}/hqdefault.jpg`"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <i class="pi pi-play-circle text-white text-xl" />
+                </div>
               </div>
             </template>
             <template v-else>
@@ -342,14 +342,9 @@ function resolveUrl(url: string) {
   return `${config.public.apiBase}${url}`
 }
 
-function embedUrl(url: string) {
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/)
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`
-
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
-  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`
-
-  return url
+function extractYoutubeId(url: string): string {
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/)
+  return match?.[1] ?? ''
 }
 
 function formatPrice(value: number) {
