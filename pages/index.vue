@@ -69,6 +69,7 @@
 <script setup lang="ts">
 import type { Product, Page } from '~/types'
 
+
 const config = useRuntimeConfig()
 
 const loading = ref(true)
@@ -77,11 +78,12 @@ const allProducts = ref<Product[]>([])
 
 onMounted(async () => {
   try {
-    const data = await $fetch<Page<Product>>(
-      `${config.public.apiBase}/api/products?size=8&sort=createdAt,desc`
-    )
-    allProducts.value = data.content
-    featured.value = data.content.slice(0, 4)
+    const [featuredData, allData] = await Promise.all([
+      $fetch<Product[]>(`${config.public.apiBase}/api/products/featured`),
+      $fetch<Page<Product>>(`${config.public.apiBase}/api/products?size=8&sort=createdAt,desc`),
+    ])
+    featured.value = featuredData
+    allProducts.value = allData.content
   } catch {
     // API not available
   } finally {
