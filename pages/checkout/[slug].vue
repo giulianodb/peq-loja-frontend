@@ -157,43 +157,6 @@
             </div>
           </div>
 
-          <!-- Cupom de desconto -->
-          <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
-            <h2 class="font-serif text-lg text-teal mb-4">Cupom de Desconto</h2>
-            <div class="flex gap-2">
-              <input
-                v-model="couponCode"
-                type="text"
-                class="checkout-input flex-1 !uppercase font-mono"
-                placeholder="Digite seu cupom"
-                :disabled="!!appliedCoupon"
-                @keyup.enter="applyCoupon"
-              />
-              <button
-                v-if="!appliedCoupon"
-                @click="applyCoupon"
-                :disabled="!couponCode.trim() || validatingCoupon"
-                class="px-5 py-2.5 text-sm font-medium text-teal border border-teal rounded-lg hover:bg-teal/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap inline-flex items-center gap-2"
-              >
-                <i v-if="validatingCoupon" class="pi pi-spin pi-spinner text-xs" />
-                Aplicar
-              </button>
-              <button
-                v-else
-                @click="removeCoupon"
-                class="px-5 py-2.5 text-sm font-medium text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors whitespace-nowrap"
-              >
-                Remover
-              </button>
-            </div>
-            <p v-if="couponError" class="text-red-500 text-xs mt-2">
-              <i class="pi pi-exclamation-circle mr-1" />{{ couponError }}
-            </p>
-            <p v-if="appliedCoupon" class="text-green-600 text-xs mt-2">
-              <i class="pi pi-check-circle mr-1" />Cupom aplicado: {{ appliedCoupon.discountType === 'PERCENTAGE' ? appliedCoupon.discountValue + '% de desconto' : 'R$ ' + appliedCoupon.discountAmount.toFixed(2) + ' de desconto' }}
-            </p>
-          </div>
-
           <!-- Pagamento -->
           <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
             <div class="flex items-center justify-between mb-5">
@@ -255,6 +218,47 @@
                   </option>
                 </select>
               </div>
+            </div>
+
+            <!-- Cupom colapsável -->
+            <div class="border-t border-sand-100 mt-5 pt-4">
+              <div v-if="appliedCoupon" class="flex items-center justify-between text-sm">
+                <span class="text-green-600 flex items-center gap-1.5">
+                  <i class="pi pi-check-circle text-xs" />
+                  Cupom <strong>{{ appliedCoupon.code }}</strong> — {{ appliedCoupon.discountType === 'PERCENTAGE' ? appliedCoupon.discountValue + '% de desconto' : 'R$ ' + appliedCoupon.discountAmount.toFixed(2) + ' de desconto' }}
+                </span>
+                <button @click="removeCoupon" class="text-xs text-red-400 hover:text-red-600 underline ml-3 shrink-0">Remover</button>
+              </div>
+              <template v-else>
+                <button
+                  v-if="!showCoupon"
+                  @click="showCoupon = true"
+                  class="text-xs text-steel hover:text-teal transition-colors underline"
+                >
+                  Tem um cupom de desconto?
+                </button>
+                <div v-else class="flex gap-2">
+                  <input
+                    v-model="couponCode"
+                    type="text"
+                    autofocus
+                    class="checkout-input flex-1 !uppercase font-mono"
+                    placeholder="Digite seu cupom"
+                    @keyup.enter="applyCoupon"
+                  />
+                  <button
+                    @click="applyCoupon"
+                    :disabled="!couponCode.trim() || validatingCoupon"
+                    class="px-4 py-2.5 text-sm font-medium text-teal border border-teal rounded-lg hover:bg-teal/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap inline-flex items-center gap-2"
+                  >
+                    <i v-if="validatingCoupon" class="pi pi-spin pi-spinner text-xs" />
+                    Aplicar
+                  </button>
+                </div>
+                <p v-if="couponError" class="text-red-500 text-xs mt-1.5">
+                  <i class="pi pi-exclamation-circle mr-1" />{{ couponError }}
+                </p>
+              </template>
             </div>
           </div>
 
@@ -407,6 +411,7 @@ const selectedBumps = reactive(new Set<number>())
 const installmentOptions = ref<any[]>([])
 
 const couponCode = ref('')
+const showCoupon = ref(false)
 const validatingCoupon = ref(false)
 const couponError = ref('')
 const appliedCoupon = ref<{ code: string; discountType: string; discountValue: number; discountAmount: number } | null>(null)
