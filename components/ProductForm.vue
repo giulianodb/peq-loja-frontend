@@ -418,12 +418,21 @@ async function handleMaterialUpload(e: Event) {
   const files = (e.target as HTMLInputElement).files
   if (!files || !props.product) return
   materialError.value = ''
-  uploadingMaterials.value = true
 
+  const MAX_SIZE = 70 * 1024 * 1024
+  const oversized = Array.from(files).filter(f => f.size > MAX_SIZE)
+  if (oversized.length > 0) {
+    materialError.value = `Arquivo(s) muito grande(s): ${oversized.map(f => f.name).join(', ')}. Tamanho máximo: 70 MB.`
+    ;(e.target as HTMLInputElement).value = ''
+    return
+  }
+
+  uploadingMaterials.value = true
   try {
     const fd = new FormData()
     for (const file of Array.from(files)) {
       fd.append('files', file)
+      fd.append('displayNames', file.name)
     }
     const result = await $fetch<ProductMaterialItem[]>(
       `/api/admin/products/${props.product.id}/materials`,
