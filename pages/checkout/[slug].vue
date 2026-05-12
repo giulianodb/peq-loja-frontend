@@ -210,7 +210,6 @@
               >
                 <div class="min-w-0">
                   <p class="text-sm text-primary-800 truncate">{{ bump.productName }}</p>
-                  <span class="text-xs text-coral font-medium">Order bump</span>
                 </div>
                 <span class="text-sm font-medium text-primary-800 flex-shrink-0">
                   {{ formatPrice(bump.funnelPrice) }}
@@ -223,9 +222,12 @@
                 <span class="text-steel">Subtotal</span>
                 <span class="text-primary-800">{{ formatPrice(subtotal) }}</span>
               </div>
-              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
-                <span class="text-green-600">Desconto ({{ appliedCoupon.code }})</span>
-                <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
+              <div v-if="appliedCoupon" class="text-sm">
+                <p class="text-green-600">Cupom {{ appliedCoupon.code }}</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-green-600 text-xs">Desconto aplicado</span>
+                  <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
+                </div>
               </div>
               <div class="flex justify-between items-center">
                 <span class="font-serif text-teal text-lg">Total</span>
