@@ -2,7 +2,7 @@
   <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
     <!-- Top bar -->
     <div class="bg-teal text-white text-center py-1.5 text-xs tracking-wide font-light">
-      🎉 Use o cupom <span class="font-semibold">PRIMEIRA10</span> e ganhe 10% na primeira compra
+      🎉 Use o cupom <span class="font-semibold">BEMVINDO10</span> e ganhe 10% na primeira compra
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6">

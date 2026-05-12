@@ -8,7 +8,7 @@
 
     <!-- Funnel not found -->
     <div v-else-if="!funnel" class="text-center py-20">
-      <p class="text-steel mb-4">Checkout nao encontrado.</p>
+      <p class="text-steel mb-4">Checkout não encontrado.</p>
       <NuxtLink to="/loja" class="btn-primary">Ir para a loja</NuxtLink>
     </div>
 
@@ -21,7 +21,7 @@
       <p class="text-steel mb-2">
         Pedido <span class="font-semibold text-teal">#{{ paymentResult.orderId }}</span> confirmado.
       </p>
-      <p class="text-primary-300 text-sm mb-8">Voce recebera os materiais por email em breve.</p>
+      <p class="text-primary-300 text-sm mb-8">Você receberá os materiais por email em breve.</p>
       <NuxtLink to="/loja" class="btn-primary">Continuar Comprando</NuxtLink>
     </div>
 
@@ -38,7 +38,7 @@
       </div>
 
       <div class="bg-sand-100 rounded-xl p-4 mb-4">
-        <p class="text-xs text-steel mb-2">Ou copie o codigo Pix:</p>
+        <p class="text-xs text-steel mb-2">Ou copie o código Pix:</p>
         <div class="flex gap-2">
           <input :value="paymentResult.pixQrCode" readonly class="flex-1 text-xs bg-white border border-sand-200 rounded-lg px-3 py-2 truncate" />
           <button @click="copyPixCode" class="btn-primary text-xs px-4">
@@ -48,7 +48,7 @@
       </div>
       <div class="flex items-center justify-center gap-2 text-xs text-steel">
         <i class="pi pi-spin pi-spinner text-teal" />
-        <span>Aguardando confirmacao do pagamento...</span>
+        <span>Aguardando confirmação do pagamento...</span>
       </div>
     </div>
 
@@ -61,7 +61,7 @@
       <p class="text-steel mb-2">
         Pedido <span class="font-semibold text-teal">#{{ paymentResult.orderId }}</span> confirmado.
       </p>
-      <p class="text-primary-300 text-sm mb-4">Voce recebera os materiais por email em breve.</p>
+      <p class="text-primary-300 text-sm mb-4">Você receberá os materiais por email em breve.</p>
       <p class="text-xs text-steel">Redirecionando em {{ redirectCountdown }}s...</p>
     </div>
 
@@ -70,7 +70,7 @@
       <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="pi pi-times text-3xl text-red-600" />
       </div>
-      <h2 class="font-serif text-3xl text-teal mb-3">Pagamento nao aprovado</h2>
+      <h2 class="font-serif text-3xl text-teal mb-3">Pagamento não aprovado</h2>
       <p class="text-steel mb-8">{{ getStatusMessage(paymentResult.statusDetail) }}</p>
       <button @click="paymentResult = null" class="btn-primary">Tentar novamente</button>
     </div>
@@ -105,7 +105,7 @@
               <div>
                 <label class="checkout-label">Email *</label>
                 <input v-model="form.email" type="email" class="checkout-input" placeholder="seu@email.com" />
-                <p class="text-xs text-steel mt-1">Os materiais serao enviados para este email.</p>
+                <p class="text-xs text-steel mt-1">Os materiais serão enviados para este email.</p>
               </div>
               <div>
                 <label class="checkout-label">Telefone</label>
@@ -178,7 +178,7 @@
                 @click="paymentMethod = 'credit_card'"
                 :class="['flex-1 py-3 px-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors', paymentMethod === 'credit_card' ? 'bg-teal text-white' : 'bg-white text-primary-700 hover:bg-sand-100']"
               >
-                <i class="pi pi-credit-card" /> Cartao
+                <i class="pi pi-credit-card" /> Cartão
               </button>
             </div>
 
@@ -192,11 +192,11 @@
 
             <div v-show="paymentMethod === 'credit_card'" class="space-y-4">
               <div>
-                <label class="checkout-label">Numero do cartao</label>
+                <label class="checkout-label">Número do cartão</label>
                 <div id="mp-card-number" class="mp-field" />
               </div>
               <div>
-                <label class="checkout-label">Nome do titular como aparece no cartao</label>
+                <label class="checkout-label">Nome do titular como aparece no cartão</label>
                 <input v-model="card.holderName" type="text" class="checkout-input" placeholder="Ex.: Maria Santos Pereira" />
               </div>
               <div class="grid grid-cols-2 gap-4">
@@ -205,7 +205,7 @@
                   <div id="mp-expiration-date" class="mp-field" />
                 </div>
                 <div>
-                  <label class="checkout-label">Codigo de seguranca</label>
+                  <label class="checkout-label">Código de segurança</label>
                   <div id="mp-security-code" class="mp-field" />
                 </div>
               </div>
@@ -421,6 +421,7 @@ let countdownInterval: ReturnType<typeof setInterval> | null = null
 
 let mpInstance: any = null
 let cardNumberField: any = null
+let mpInitialized = false
 
 const selectedBumpsList = computed(() =>
   funnel.value?.bumps.filter(b => selectedBumps.has(b.id)) || []
@@ -536,39 +537,9 @@ onUnmounted(() => {
   if (countdownInterval) clearInterval(countdownInterval)
 })
 
-onMounted(async () => {
-  try {
-    const data = await apiFetch<FunnelData>(`/api/funnels/${route.params.slug}`)
-    if (!data.active) {
-      funnel.value = null
-      return
-    }
-    funnel.value = data
-    installmentOptions.value = [{ installments: 1, installment_amount: data.product.funnelPrice, total_amount: data.product.funnelPrice }]
-
-    const { initiateCheckout } = useTracking()
-    initiateCheckout(data.product.funnelPrice, [
-      { id: data.product.id, name: data.product.name, price: data.product.funnelPrice, quantity: 1 },
-    ])
-  } catch {
-    funnel.value = null
-  } finally {
-    loadingFunnel.value = false
-  }
-
-  if (recoveryToken.value) {
-    try {
-      const recovered = await apiFetch<any>(`/api/orders/recover/${recoveryToken.value}`)
-      if (recovered.name) form.name = recovered.name
-      if (recovered.email) form.email = recovered.email
-      if (recovered.phone) form.phone = recovered.phone
-      if (recovered.cpf) form.cpf = recovered.cpf
-    } catch (_) {}
-  }
-
-  await nextTick()
-  if (!funnel.value) return
-
+async function initMercadoPago() {
+  if (mpInitialized || !funnel.value) return
+  mpInitialized = true
   try {
     const { loadMercadoPago } = await import('@mercadopago/sdk-js')
     await loadMercadoPago()
@@ -612,7 +583,46 @@ onMounted(async () => {
     })
   } catch (e) {
     console.error('Erro ao inicializar MercadoPago:', e)
-    error.value = 'Erro ao carregar formulario de pagamento.'
+    error.value = 'Erro ao carregar formulário de pagamento.'
+    mpInitialized = false
+  }
+}
+
+watch(paymentMethod, async (method) => {
+  if (method === 'credit_card') {
+    await nextTick()
+    await initMercadoPago()
+  }
+})
+
+onMounted(async () => {
+  try {
+    const data = await apiFetch<FunnelData>(`/api/funnels/${route.params.slug}`)
+    if (!data.active) {
+      funnel.value = null
+      return
+    }
+    funnel.value = data
+    installmentOptions.value = [{ installments: 1, installment_amount: data.product.funnelPrice, total_amount: data.product.funnelPrice }]
+
+    const { initiateCheckout } = useTracking()
+    initiateCheckout(data.product.funnelPrice, [
+      { id: data.product.id, name: data.product.name, price: data.product.funnelPrice, quantity: 1 },
+    ])
+  } catch {
+    funnel.value = null
+  } finally {
+    loadingFunnel.value = false
+  }
+
+  if (recoveryToken.value) {
+    try {
+      const recovered = await apiFetch<any>(`/api/orders/recover/${recoveryToken.value}`)
+      if (recovered.name) form.name = recovered.name
+      if (recovered.email) form.email = recovered.email
+      if (recovered.phone) form.phone = recovered.phone
+      if (recovered.cpf) form.cpf = recovered.cpf
+    } catch (_) {}
   }
 })
 
@@ -674,6 +684,13 @@ function buildItems() {
 }
 
 async function submitCardPayment() {
+  if (!mpInstance) {
+    await initMercadoPago()
+    if (!mpInstance) {
+      error.value = 'Erro ao carregar formulário de pagamento. Tente novamente.'
+      return
+    }
+  }
   const token = await mpInstance.fields.createCardToken({
     cardholderName: card.holderName,
     identificationType: 'CPF',
@@ -744,19 +761,19 @@ async function submitPixPayment() {
 
 function getStatusMessage(detail: string): string {
   const messages: Record<string, string> = {
-    cc_rejected_bad_filled_card_number: 'Numero do cartao incorreto.',
+    cc_rejected_bad_filled_card_number: 'Número do cartão incorreto.',
     cc_rejected_bad_filled_date: 'Data de validade incorreta.',
-    cc_rejected_bad_filled_other: 'Dados do cartao incorretos.',
-    cc_rejected_bad_filled_security_code: 'Codigo de seguranca incorreto.',
+    cc_rejected_bad_filled_other: 'Dados do cartão incorretos.',
+    cc_rejected_bad_filled_security_code: 'Código de segurança incorreto.',
     cc_rejected_call_for_authorize: 'Autorize o pagamento junto ao seu banco.',
-    cc_rejected_card_disabled: 'Cartao desabilitado. Contate seu banco.',
+    cc_rejected_card_disabled: 'Cartão desabilitado. Contate seu banco.',
     cc_rejected_duplicated_payment: 'Pagamento duplicado.',
-    cc_rejected_high_risk: 'Pagamento recusado por seguranca.',
+    cc_rejected_high_risk: 'Pagamento recusado por segurança.',
     cc_rejected_insufficient_amount: 'Saldo insuficiente.',
     cc_rejected_max_attempts: 'Limite de tentativas atingido.',
-    cc_rejected_other_reason: 'Pagamento nao processado.',
+    cc_rejected_other_reason: 'Pagamento não processado.',
   }
-  return messages[detail] || 'Pagamento nao aprovado. Tente novamente com outro metodo.'
+  return messages[detail] || 'Pagamento não aprovado. Tente novamente com outro método.'
 }
 </script>
 

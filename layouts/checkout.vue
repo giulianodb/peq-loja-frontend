@@ -3,11 +3,17 @@
     <!-- Header mínimo -->
     <header class="py-6 text-center">
       <NuxtLink to="/">
-        <img
-          src="/images/logo-coral.png"
-          alt="Pequenas Trilhas"
-          class="h-12 mx-auto"
-        />
+        <picture>
+          <source srcset="/images/logo-coral.webp" type="image/webp" />
+          <img
+            src="/images/logo-coral.png"
+            alt="Pequenas Trilhas"
+            class="h-12 mx-auto"
+            width="276"
+            height="120"
+            fetchpriority="high"
+          />
+        </picture>
       </NuxtLink>
     </header>
 

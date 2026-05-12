@@ -24,10 +24,10 @@
               <tr class="bg-gray-50 border-b border-gray-200">
                 <th class="text-left px-4 py-3 font-medium text-gray-500">Produto</th>
                 <th class="text-left px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Categoria</th>
-                <th class="text-right px-4 py-3 font-medium text-gray-500">Preco</th>
+                <th class="text-right px-4 py-3 font-medium text-gray-500">Preço</th>
                 <th class="text-right px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Estoque</th>
                 <th class="text-center px-4 py-3 font-medium text-gray-500">Status</th>
-                <th class="text-right px-4 py-3 font-medium text-gray-500">Acoes</th>
+                <th class="text-right px-4 py-3 font-medium text-gray-500">Ações</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -108,7 +108,7 @@
         <div class="bg-white rounded-xl p-6 w-full max-w-sm mx-4 shadow-xl">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Excluir produto</h3>
           <p class="text-sm text-gray-600 mb-6">
-            Tem certeza que deseja excluir <strong>{{ deleting.name }}</strong>? Esta acao nao pode ser desfeita.
+            Tem certeza que deseja excluir <strong>{{ deleting.name }}</strong>? Esta ação não pode ser desfeita.
           </p>
           <div class="flex gap-3 justify-end">
             <button

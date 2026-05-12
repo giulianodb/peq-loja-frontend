@@ -26,11 +26,20 @@
         <!-- Visual -->
         <div class="order-1 md:order-2 flex justify-center">
           <div class="relative">
-            <img
-              src="/images/hero-banner.png"
-              alt="Pequenas Trilhas"
-              class="w-56 sm:w-72 md:w-[420px] h-auto drop-shadow-xl"
-            />
+            <picture>
+              <source srcset="/images/hero-banner.webp" type="image/webp" />
+              <img
+                src="/images/hero-banner.png"
+                alt="Pequenas Trilhas"
+                width="933"
+                height="1168"
+                fetchpriority="high"
+                class="w-56 sm:w-72 md:w-[420px] h-auto drop-shadow-xl"
+                :class="heroLoaded ? 'opacity-100' : 'opacity-0'"
+                style="transition: opacity 0.5s ease"
+                @load="heroLoaded = true"
+              />
+            </picture>
             <!-- Decorative dots -->
             <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-salmon/30 rounded-full -z-10" />
             <div class="absolute -top-4 -right-4 w-16 h-16 bg-sand-200 rounded-full -z-10" />
@@ -40,3 +49,7 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+const heroLoaded = ref(false)
+</script>

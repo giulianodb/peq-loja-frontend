@@ -33,8 +33,8 @@ export default defineNuxtConfig({
 
   googleFonts: {
     families: {
-      'Playfair Display': [400, 500, 600, 700],
-      'Inter': [300, 400, 500, 600],
+      'Playfair Display': [400, 700],
+      'Inter': [400, 500],
     },
     display: 'swap',
   },
@@ -47,6 +47,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        { rel: 'preload', as: 'image', href: '/images/logo-coral.webp', type: 'image/webp' },
       ],
     },
   },

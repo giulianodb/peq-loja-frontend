@@ -38,12 +38,12 @@
           />
         </div>
         <div class="sm:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Descricao</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
           <textarea
             v-model="form.description"
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
-            placeholder="Texto de apoio para a pagina de checkout"
+            placeholder="Texto de apoio para a página de checkout"
           />
         </div>
         <div class="flex items-center gap-3">

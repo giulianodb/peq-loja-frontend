@@ -1,12 +1,16 @@
 <template>
   <NuxtLink :to="`/produto/${product.id}`" class="card-product group">
-    <div class="aspect-[4/5] bg-light relative overflow-hidden">
+    <div class="aspect-[4/5] bg-sand-100 relative overflow-hidden">
       <img
         v-if="product.imageUrl"
         :src="imageUrl"
         :alt="product.name"
         loading="lazy"
+        decoding="async"
         class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+        :class="loaded ? 'opacity-100' : 'opacity-0'"
+        style="transition: opacity 0.4s ease, transform 0.5s ease"
+        @load="loaded = true"
       />
       <div
         v-else
@@ -68,6 +72,8 @@ import type { Product } from '~/types'
 
 const props = defineProps<{ product: Product }>()
 const config = useRuntimeConfig()
+
+const loaded = ref(false)
 
 const imageUrl = computed(() => {
   if (!props.product.imageUrl) return ''

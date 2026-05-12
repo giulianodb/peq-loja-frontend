@@ -15,7 +15,7 @@
 
       <!-- Short description -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Descricao curta</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Descrição curta</label>
         <input
           v-model="form.shortDescription"
           type="text"
@@ -26,12 +26,12 @@
 
       <!-- Description -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Descricao</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
         <textarea
           v-model="form.description"
           rows="5"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal/30 focus:border-teal outline-none resize-y"
-          placeholder="Descricao detalhada do produto"
+          placeholder="Descrição detalhada do produto"
         />
       </div>
 

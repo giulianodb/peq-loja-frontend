@@ -23,10 +23,10 @@
               <tr class="bg-gray-50 border-b border-gray-200">
                 <th class="text-left px-4 py-3 font-medium text-gray-500">Nome</th>
                 <th class="text-left px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Produto</th>
-                <th class="text-right px-4 py-3 font-medium text-gray-500">Preco</th>
+                <th class="text-right px-4 py-3 font-medium text-gray-500">Preço</th>
                 <th class="text-center px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Bumps</th>
                 <th class="text-center px-4 py-3 font-medium text-gray-500">Status</th>
-                <th class="text-right px-4 py-3 font-medium text-gray-500">Acoes</th>
+                <th class="text-right px-4 py-3 font-medium text-gray-500">Ações</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">

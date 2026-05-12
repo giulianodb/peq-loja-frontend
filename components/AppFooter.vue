@@ -4,7 +4,10 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
         <!-- Brand -->
         <div>
-          <img src="/images/logo-coral.png" alt="Pequenas Trilhas" class="h-12 w-auto mb-4" />
+          <picture>
+            <source srcset="/images/logo-coral.webp" type="image/webp" />
+            <img src="/images/logo-coral.png" alt="Pequenas Trilhas" class="h-12 w-auto mb-4" width="276" height="120" />
+          </picture>
           <p class="text-sm leading-relaxed text-primary-300">
             Materiais educativos digitais pensados com carinho para famílias e educadores
             que valorizam o aprendizado significativo.
@@ -49,11 +52,15 @@
           <ul class="space-y-2 text-sm">
             <li class="flex items-center gap-2">
               <i class="pi pi-envelope text-xs" />
-              contato@pequenastrilhas.com.br
+              <a href="mailto:suporte@pequenastrilhas.com.br" class="hover:text-salmon transition-colors">
+                suporte@pequenastrilhas.com.br
+              </a>
             </li>
             <li class="flex items-center gap-2">
               <i class="pi pi-instagram text-xs" />
-              @pequenastrilhas
+              <a href="https://instagram.com/pequenastrilhas" target="_blank" rel="noopener noreferrer" class="hover:text-salmon transition-colors">
+                @pequenastrilhas
+              </a>
             </li>
           </ul>
         </div>
