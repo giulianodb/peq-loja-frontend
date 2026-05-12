@@ -1,0 +1,36 @@
+<style>
+  #pt-loader {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #EDDFDC 0%, #ffffff 50%, #EDDFDC 100%);
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+  }
+  #pt-loader img {
+    height: 44px;
+    width: auto;
+  }
+  #pt-loader .pt-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #EEE1DD;
+    border-top-color: #194B5E;
+    border-radius: 50%;
+    animation: pt-spin 0.7s linear infinite;
+  }
+  @keyframes pt-spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+<div id="pt-loader">
+  <picture>
+    <source srcset="/images/logo-coral.webp" type="image/webp" />
+    <img src="/images/logo-coral.png" alt="Pequenas Trilhas" />
+  </picture>
+  <div class="pt-spinner"></div>
+</div>

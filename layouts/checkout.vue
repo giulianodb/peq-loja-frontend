@@ -8,7 +8,7 @@
           <img
             src="/images/logo-coral.png"
             alt="Pequenas Trilhas"
-            class="h-12 mx-auto"
+            class="h-12 w-auto mx-auto"
             width="276"
             height="120"
             fetchpriority="high"
