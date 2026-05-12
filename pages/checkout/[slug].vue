@@ -222,12 +222,9 @@
                 <span class="text-steel">Subtotal</span>
                 <span class="text-primary-800">{{ formatPrice(subtotal) }}</span>
               </div>
-              <div v-if="appliedCoupon" class="text-sm">
+              <div v-if="appliedCoupon" class="flex justify-between items-start text-sm">
                 <p class="text-green-600">Cupom {{ appliedCoupon.code }}</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-green-600 text-xs">Desconto aplicado</span>
-                  <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
-                </div>
+                <span class="text-green-600 font-medium shrink-0 ml-2">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
               </div>
               <div class="flex justify-between items-center">
                 <span class="font-serif text-teal text-lg">Total</span>
@@ -305,12 +302,17 @@
 
             <!-- Cupom colapsável -->
             <div class="border-t border-sand-100 mt-5 pt-4">
-              <div v-if="appliedCoupon" class="flex items-center justify-between text-sm">
-                <span class="text-green-600 flex items-center gap-1.5">
-                  <i class="pi pi-check-circle text-xs" />
-                  Cupom <strong>{{ appliedCoupon.code }}</strong> — {{ appliedCoupon.discountType === 'PERCENTAGE' ? appliedCoupon.discountValue + '% de desconto' : 'R$ ' + appliedCoupon.discountAmount.toFixed(2) + ' de desconto' }}
-                </span>
-                <button @click="removeCoupon" class="text-xs text-red-400 hover:text-red-600 underline ml-3 shrink-0">Remover</button>
+              <div v-if="appliedCoupon" class="text-sm">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-green-600 flex items-center gap-1.5 font-medium">
+                    <i class="pi pi-check-circle text-xs" />
+                    Cupom <strong>{{ appliedCoupon.code }}</strong>
+                  </span>
+                  <button @click="removeCoupon" class="text-xs text-red-400 hover:text-red-600 underline shrink-0">Remover</button>
+                </div>
+                <p class="text-green-600 text-xs mt-0.5 ml-4">
+                  {{ appliedCoupon.discountType === 'PERCENTAGE' ? appliedCoupon.discountValue + '% de desconto' : 'R$ ' + appliedCoupon.discountAmount.toFixed(2) + ' de desconto' }}
+                </p>
               </div>
               <template v-else>
                 <button
