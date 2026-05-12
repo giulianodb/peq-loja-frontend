@@ -40,9 +40,6 @@
             <li>
               <NuxtLink to="/perguntas-frequentes" class="hover:text-salmon transition-colors">Perguntas Frequentes</NuxtLink>
             </li>
-            <li>
-              <NuxtLink to="/contato" class="hover:text-salmon transition-colors">Contato</NuxtLink>
-            </li>
           </ul>
         </div>
 
@@ -61,6 +58,10 @@
               <a href="https://instagram.com/pequenastrilhas" target="_blank" rel="noopener noreferrer" class="hover:text-salmon transition-colors">
                 @pequenastrilhas
               </a>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="pi pi-comment text-xs" />
+              <NuxtLink to="/contato" class="hover:text-salmon transition-colors">Formulário de contato</NuxtLink>
             </li>
           </ul>
         </div>

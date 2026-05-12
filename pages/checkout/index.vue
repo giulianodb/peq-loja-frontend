@@ -415,14 +415,17 @@ onMounted(async () => {
       if (recovered.email) form.email = recovered.email
       if (recovered.phone) form.phone = recovered.phone
       if (recovered.cpf) form.cpf = recovered.cpf
-      if (recovered.couponCode) couponCode.value = recovered.couponCode
       // Só popula o carrinho se estiver vazio (acesso direto à URL, sem passar pela página /recuperar/)
       if (cart.items.length === 0 && recovered.items?.length) {
         for (const item of recovered.items) {
           cart.add({ id: item.productId, name: item.productName, price: item.unitPrice } as any, item.quantity)
         }
-        // Aguarda o Vue re-renderizar o formulário (com os divs do MP) antes de montar os campos
         await nextTick()
+      }
+      if (recovered.couponCode) {
+        couponCode.value = recovered.couponCode
+        showCoupon.value = true
+        await applyCoupon()
       }
     } catch (_) {}
   }

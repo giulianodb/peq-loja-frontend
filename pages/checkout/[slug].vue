@@ -622,6 +622,11 @@ onMounted(async () => {
       if (recovered.email) form.email = recovered.email
       if (recovered.phone) form.phone = recovered.phone
       if (recovered.cpf) form.cpf = recovered.cpf
+      if (recovered.couponCode) {
+        couponCode.value = recovered.couponCode
+        showCoupon.value = true
+        await applyCoupon()
+      }
     } catch (_) {}
   }
 })
