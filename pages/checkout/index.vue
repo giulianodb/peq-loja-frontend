@@ -80,7 +80,8 @@
       <h1 class="font-serif text-2xl text-teal text-center mb-8">Finalizar Compra</h1>
 
       <div class="grid lg:grid-cols-5 gap-8">
-        <!-- Coluna esquerda -->
+
+        <!-- Bloco 1: Dados do cliente -->
         <div class="lg:col-span-3 space-y-6">
 
           <!-- Dados do cliente -->
@@ -115,6 +116,46 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Resumo do pedido: mobile=após dados, desktop=coluna direita cobrindo as 2 linhas -->
+        <div class="lg:col-span-2 lg:row-span-2">
+          <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6 lg:sticky lg:top-6">
+            <h2 class="font-serif text-lg text-teal mb-5">Seu Pedido</h2>
+            <div class="flex justify-between text-xs font-medium text-steel uppercase tracking-wide pb-2 border-b border-sand-200">
+              <span>Produto</span>
+              <span>Subtotal</span>
+            </div>
+            <div class="divide-y divide-sand-100">
+              <div v-for="item in cart.items" :key="item.product.id" class="flex justify-between gap-3 py-3">
+                <div class="min-w-0">
+                  <p class="text-sm text-primary-800">{{ item.product.name }}</p>
+                  <p class="text-xs text-steel">Qtd: {{ item.quantity }}</p>
+                </div>
+                <span class="text-sm font-medium text-primary-800 flex-shrink-0">
+                  {{ formatPrice(item.product.price * item.quantity) }}
+                </span>
+              </div>
+            </div>
+            <div class="border-t border-sand-200 mt-2 pt-4 space-y-2">
+              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
+                <span class="text-steel">Subtotal</span>
+                <span class="text-primary-800">{{ formatPrice(cart.total) }}</span>
+              </div>
+              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
+                <span class="text-green-600">Desconto ({{ appliedCoupon.code }})</span>
+                <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-serif text-teal text-lg">Total</span>
+                <span class="text-2xl font-bold text-coral">{{ formatPrice(finalTotal) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Pagamento + Botão -->
+        <div class="lg:col-span-3 space-y-6">
 
           <!-- Pagamento -->
           <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
@@ -244,41 +285,6 @@
           </p>
         </div>
 
-        <!-- Coluna direita: resumo -->
-        <div class="lg:col-span-2">
-          <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6 lg:sticky lg:top-6">
-            <h2 class="font-serif text-lg text-teal mb-5">Seu Pedido</h2>
-            <div class="flex justify-between text-xs font-medium text-steel uppercase tracking-wide pb-2 border-b border-sand-200">
-              <span>Produto</span>
-              <span>Subtotal</span>
-            </div>
-            <div class="divide-y divide-sand-100">
-              <div v-for="item in cart.items" :key="item.product.id" class="flex justify-between gap-3 py-3">
-                <div class="min-w-0">
-                  <p class="text-sm text-primary-800">{{ item.product.name }}</p>
-                  <p class="text-xs text-steel">Qtd: {{ item.quantity }}</p>
-                </div>
-                <span class="text-sm font-medium text-primary-800 flex-shrink-0">
-                  {{ formatPrice(item.product.price * item.quantity) }}
-                </span>
-              </div>
-            </div>
-            <div class="border-t border-sand-200 mt-2 pt-4 space-y-2">
-              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
-                <span class="text-steel">Subtotal</span>
-                <span class="text-primary-800">{{ formatPrice(cart.total) }}</span>
-              </div>
-              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
-                <span class="text-green-600">Desconto ({{ appliedCoupon.code }})</span>
-                <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="font-serif text-teal text-lg">Total</span>
-                <span class="text-2xl font-bold text-coral">{{ formatPrice(finalTotal) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>

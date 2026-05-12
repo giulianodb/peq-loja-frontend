@@ -1,6 +1,6 @@
 <template>
   <NuxtLink :to="`/produto/${product.id}`" class="card-product group">
-    <div class="aspect-[4/5] bg-sand-100 relative overflow-hidden">
+    <div class="aspect-[4/5] bg-light relative overflow-hidden">
       <img
         v-if="product.imageUrl"
         :src="imageUrl"

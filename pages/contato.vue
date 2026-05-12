@@ -81,6 +81,7 @@ async function submit() {
       body: JSON.stringify(form),
     })
     sent.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (e: any) {
     error.value = e?.data?.message || 'Erro ao enviar mensagem. Tente novamente.'
   } finally {

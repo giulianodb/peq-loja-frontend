@@ -3,10 +3,10 @@
     <Transition name="fade" mode="out-in">
       <div v-if="loading" key="skeleton" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <div v-for="i in skeletonCount" :key="i" class="animate-pulse">
-          <div class="aspect-[4/5] bg-sand-200 rounded-xl" />
-          <div class="mt-3 h-3 bg-sand-200 rounded w-1/3" />
-          <div class="mt-2 h-4 bg-sand-200 rounded w-3/4" />
-          <div class="mt-2 h-3 bg-sand-200 rounded w-1/2" />
+          <div class="aspect-[4/5] bg-primary-100 rounded-xl" />
+          <div class="mt-3 h-3 bg-primary-100 rounded w-1/3" />
+          <div class="mt-2 h-4 bg-primary-100 rounded w-3/4" />
+          <div class="mt-2 h-3 bg-primary-100 rounded w-1/2" />
         </div>
       </div>
 

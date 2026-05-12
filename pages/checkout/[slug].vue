@@ -85,7 +85,8 @@
       <h1 v-else class="font-serif text-2xl text-teal text-center mb-8">Finalizar Compra</h1>
 
       <div class="grid lg:grid-cols-5 gap-8">
-        <!-- Coluna esquerda -->
+
+        <!-- Bloco 1: Dados + Bumps -->
         <div class="lg:col-span-3 space-y-6">
 
           <!-- Dados do cliente -->
@@ -122,40 +123,120 @@
           </div>
 
           <!-- Order bumps -->
-          <div v-if="funnel.bumps.length > 0" class="space-y-3">
-            <div
-              v-for="bump in funnel.bumps"
-              :key="bump.id"
-              @click="toggleBump(bump.id)"
-              class="bg-white rounded-2xl shadow-sm border-2 p-4 cursor-pointer transition-all"
-              :class="selectedBumps.has(bump.id) ? 'border-coral bg-coral/5' : 'border-sand-200 hover:border-salmon/50'"
-            >
-              <div class="flex items-center gap-4">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-6 h-6 rounded border-2 flex items-center justify-center transition-colors"
-                    :class="selectedBumps.has(bump.id) ? 'bg-coral border-coral' : 'border-gray-300'"
-                  >
-                    <i v-if="selectedBumps.has(bump.id)" class="pi pi-check text-white text-xs" />
+          <div v-if="funnel.bumps.length > 0" class="rounded-2xl border-2 border-coral/40 overflow-hidden shadow-sm">
+
+            <!-- Cabeçalho chamativo -->
+            <div class="bg-gradient-to-r from-coral/15 to-salmon/20 border-b border-coral/20 px-4 py-3.5 flex items-start gap-3">
+              <span class="text-xl leading-none mt-0.5">🎁</span>
+              <div>
+                <p class="text-sm font-semibold text-teal leading-snug">Quase lá! Leve mais por menos antes de finalizar</p>
+                <p class="text-xs text-steel mt-0.5">Selecionamos materiais que combinam com a sua escolha — com desconto especial</p>
+              </div>
+            </div>
+
+            <!-- Cards dos bumps -->
+            <div class="bg-white p-3 space-y-3">
+              <div
+                v-for="bump in funnel.bumps"
+                :key="bump.id"
+                @click="toggleBump(bump.id)"
+                class="rounded-xl border-2 p-4 cursor-pointer transition-all"
+                :class="selectedBumps.has(bump.id) ? 'border-coral bg-coral/5' : 'border-sand-200 hover:border-salmon/50 bg-white'"
+              >
+                <div class="flex items-center gap-4">
+                  <div class="flex-shrink-0">
+                    <div
+                      class="w-6 h-6 rounded border-2 flex items-center justify-center transition-colors"
+                      :class="selectedBumps.has(bump.id) ? 'bg-coral border-coral' : 'border-gray-300'"
+                    >
+                      <i v-if="selectedBumps.has(bump.id)" class="pi pi-check text-white text-xs" />
+                    </div>
                   </div>
-                </div>
-                <img
-                  v-if="bump.productImageUrl"
-                  :src="imgUrl(bump.productImageUrl)"
-                  loading="lazy"
-                  class="w-14 h-14 rounded-lg object-cover flex-shrink-0 hidden sm:block"
-                />
-                <div class="flex-1 min-w-0">
-                  <p class="font-medium text-primary-800 text-sm">{{ bump.customTitle || bump.productName }}</p>
-                  <div v-if="bump.description" class="text-xs text-steel mt-0.5 leading-relaxed" v-html="bump.description" />
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class="text-xs text-steel line-through">{{ formatPrice(bump.originalPrice) }}</span>
-                    <span class="text-sm font-bold text-coral">{{ formatPrice(bump.funnelPrice) }}</span>
+                  <img
+                    v-if="bump.productImageUrl"
+                    :src="imgUrl(bump.productImageUrl)"
+                    loading="lazy"
+                    class="w-14 h-14 rounded-lg object-cover flex-shrink-0 hidden sm:block"
+                  />
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-primary-800 text-sm">{{ bump.customTitle || bump.productName }}</p>
+                    <div v-if="bump.description" class="text-xs text-steel mt-0.5 leading-relaxed" v-html="bump.description" />
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-xs text-steel line-through">{{ formatPrice(bump.originalPrice) }}</span>
+                      <span class="text-sm font-bold text-coral">{{ formatPrice(bump.funnelPrice) }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Resumo do pedido: mobile=após bumps, desktop=coluna direita cobrindo as 2 linhas -->
+        <div class="lg:col-span-2 lg:row-span-2">
+          <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6 lg:sticky lg:top-6">
+            <h2 class="font-serif text-lg text-teal mb-5">Seu Pedido</h2>
+            <div class="flex justify-between text-xs font-medium text-steel uppercase tracking-wide pb-2 border-b border-sand-200">
+              <span>Produto</span>
+              <span>Valor</span>
+            </div>
+            <div class="divide-y divide-sand-100">
+              <!-- Produto principal -->
+              <div class="flex justify-between gap-3 py-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <img
+                    v-if="funnel.product.imageUrl"
+                    :src="imgUrl(funnel.product.imageUrl)"
+                    loading="lazy"
+                    class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                  />
+                  <div class="min-w-0">
+                    <p class="text-sm text-primary-800 truncate">{{ funnel.product.name }}</p>
+                    <p v-if="funnel.product.originalPrice !== funnel.product.funnelPrice" class="text-xs text-steel line-through">
+                      {{ formatPrice(funnel.product.originalPrice) }}
+                    </p>
+                  </div>
+                </div>
+                <span class="text-sm font-medium text-primary-800 flex-shrink-0">
+                  {{ formatPrice(funnel.product.funnelPrice) }}
+                </span>
+              </div>
+
+              <!-- Bumps selecionados -->
+              <div
+                v-for="bump in selectedBumpsList"
+                :key="bump.id"
+                class="flex justify-between gap-3 py-3"
+              >
+                <div class="min-w-0">
+                  <p class="text-sm text-primary-800 truncate">{{ bump.productName }}</p>
+                  <span class="text-xs text-coral font-medium">Order bump</span>
+                </div>
+                <span class="text-sm font-medium text-primary-800 flex-shrink-0">
+                  {{ formatPrice(bump.funnelPrice) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="border-t border-sand-200 mt-2 pt-4 space-y-2">
+              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
+                <span class="text-steel">Subtotal</span>
+                <span class="text-primary-800">{{ formatPrice(subtotal) }}</span>
+              </div>
+              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
+                <span class="text-green-600">Desconto ({{ appliedCoupon.code }})</span>
+                <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-serif text-teal text-lg">Total</span>
+                <span class="text-2xl font-bold text-coral">{{ formatPrice(orderTotal) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Pagamento + Botão -->
+        <div class="lg:col-span-3 space-y-6">
 
           <!-- Pagamento -->
           <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6">
@@ -186,8 +267,8 @@
               <div class="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="pi pi-qrcode text-3xl text-teal" />
               </div>
-              <p class="text-primary-800 font-medium mb-1">Pague de forma segura e instantanea</p>
-              <p class="text-steel text-sm">Ao confirmar, vamos gerar o codigo Pix para pagamento.</p>
+              <p class="text-primary-800 font-medium mb-1">Pague de forma segura e instantânea</p>
+              <p class="text-steel text-sm">Ao confirmar, vamos gerar o código Pix para pagamento.</p>
             </div>
 
             <div v-show="paymentMethod === 'credit_card'" class="space-y-4">
@@ -280,68 +361,6 @@
           </p>
         </div>
 
-        <!-- Coluna direita: resumo -->
-        <div class="lg:col-span-2">
-          <div class="bg-white rounded-2xl shadow-sm border border-sand-200 p-6 lg:sticky lg:top-6">
-            <h2 class="font-serif text-lg text-teal mb-5">Seu Pedido</h2>
-            <div class="flex justify-between text-xs font-medium text-steel uppercase tracking-wide pb-2 border-b border-sand-200">
-              <span>Produto</span>
-              <span>Valor</span>
-            </div>
-            <div class="divide-y divide-sand-100">
-              <!-- Produto principal -->
-              <div class="flex justify-between gap-3 py-3">
-                <div class="flex items-center gap-3 min-w-0">
-                  <img
-                    v-if="funnel.product.imageUrl"
-                    :src="imgUrl(funnel.product.imageUrl)"
-                    loading="lazy"
-                    class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                  />
-                  <div class="min-w-0">
-                    <p class="text-sm text-primary-800 truncate">{{ funnel.product.name }}</p>
-                    <p v-if="funnel.product.originalPrice !== funnel.product.funnelPrice" class="text-xs text-steel line-through">
-                      {{ formatPrice(funnel.product.originalPrice) }}
-                    </p>
-                  </div>
-                </div>
-                <span class="text-sm font-medium text-primary-800 flex-shrink-0">
-                  {{ formatPrice(funnel.product.funnelPrice) }}
-                </span>
-              </div>
-
-              <!-- Bumps selecionados -->
-              <div
-                v-for="bump in selectedBumpsList"
-                :key="bump.id"
-                class="flex justify-between gap-3 py-3"
-              >
-                <div class="min-w-0">
-                  <p class="text-sm text-primary-800 truncate">{{ bump.productName }}</p>
-                  <span class="text-xs text-coral font-medium">Order bump</span>
-                </div>
-                <span class="text-sm font-medium text-primary-800 flex-shrink-0">
-                  {{ formatPrice(bump.funnelPrice) }}
-                </span>
-              </div>
-            </div>
-
-            <div class="border-t border-sand-200 mt-2 pt-4 space-y-2">
-              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
-                <span class="text-steel">Subtotal</span>
-                <span class="text-primary-800">{{ formatPrice(subtotal) }}</span>
-              </div>
-              <div v-if="appliedCoupon" class="flex justify-between items-center text-sm">
-                <span class="text-green-600">Desconto ({{ appliedCoupon.code }})</span>
-                <span class="text-green-600 font-medium">-{{ formatPrice(appliedCoupon.discountAmount) }}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="font-serif text-teal text-lg">Total</span>
-                <span class="text-2xl font-bold text-coral">{{ formatPrice(orderTotal) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
