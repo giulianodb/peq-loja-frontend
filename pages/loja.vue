@@ -36,6 +36,16 @@
       </button>
     </div>
 
+    <!-- Descrição da categoria selecionada -->
+    <Transition name="cat-desc">
+      <div
+        v-if="selectedCategoryData?.description"
+        class="mb-8 bg-sand-100/60 border border-sand-200 rounded-2xl px-6 py-4"
+      >
+        <p class="text-sm text-primary-700 leading-relaxed">{{ selectedCategoryData.description }}</p>
+      </div>
+    </Transition>
+
     <!-- Products -->
     <ProductGrid :products="products" :loading="loading" />
 
@@ -70,6 +80,10 @@ const categories = ref<Category[]>([])
 const selectedCategory = ref<number | null>(null)
 const page = ref(0)
 const totalPages = ref(0)
+
+const selectedCategoryData = computed(() =>
+  selectedCategory.value ? categories.value.find(c => c.id === selectedCategory.value) ?? null : null
+)
 
 function selectCategory(catId: number | null) {
   selectedCategory.value = catId
@@ -115,3 +129,15 @@ onMounted(async () => {
   fetchProducts()
 })
 </script>
+
+<style scoped>
+.cat-desc-enter-active,
+.cat-desc-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.cat-desc-enter-from,
+.cat-desc-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+</style>
