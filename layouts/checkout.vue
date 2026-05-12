@@ -17,7 +17,8 @@
 
     <!-- Footer mínimo -->
     <footer class="py-4 text-center text-xs text-steel border-t border-sand-200">
-      <p>&copy; {{ new Date().getFullYear() }} Pequenas Trilhas. Todos os direitos reservados.</p>
+      <p>&copy; {{ new Date().getFullYear() }} Pequenas Trilhas&reg;. Todos os direitos reservados.</p>
+      <p class="mt-1">CNPJ: 55.312.007/0001-30</p>
     </footer>
   </div>
 </template>

@@ -20,9 +20,6 @@
               <i class="pi pi-arrow-right mr-2" />
               Ver Materiais
             </NuxtLink>
-            <NuxtLink to="/loja" class="btn-outline">
-              Saiba Mais
-            </NuxtLink>
           </div>
         </div>
 

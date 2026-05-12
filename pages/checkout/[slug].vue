@@ -99,24 +99,32 @@
             </div>
             <div class="grid sm:grid-cols-2 gap-4">
               <div class="sm:col-span-2">
-                <label class="checkout-label">Nome completo *</label>
-                <input v-model="form.name" type="text" class="checkout-input" placeholder="Seu nome completo" />
+                <div class="checkout-field">
+                  <input v-model="form.name" type="text" id="f-name" class="checkout-input" placeholder=" " />
+                  <label for="f-name">Nome completo *</label>
+                </div>
               </div>
               <div>
-                <label class="checkout-label">Email *</label>
-                <input v-model="form.email" type="email" class="checkout-input" placeholder="seu@email.com" />
+                <div class="checkout-field">
+                  <input v-model="form.email" type="email" id="f-email" class="checkout-input" placeholder=" " />
+                  <label for="f-email">Email *</label>
+                </div>
                 <p class="text-xs text-steel mt-1">Os materiais serao enviados para este email.</p>
               </div>
               <div>
-                <label class="checkout-label">Telefone</label>
                 <div class="flex">
                   <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-sand-200 bg-sand-100 text-steel text-sm select-none">+55</span>
-                  <input v-model="form.phone" type="tel" class="checkout-input !rounded-l-none" placeholder="(00) 00000-0000" maxlength="15" @input="maskPhone" />
+                  <div class="checkout-field flex-1">
+                    <input v-model="form.phone" type="tel" id="f-phone" class="checkout-input !rounded-l-none" placeholder=" " maxlength="15" @input="maskPhone" />
+                    <label for="f-phone">Telefone</label>
+                  </div>
                 </div>
               </div>
               <div class="sm:col-span-2">
-                <label class="checkout-label">CPF *</label>
-                <input v-model="form.cpf" type="text" class="checkout-input" placeholder="000.000.000-00" maxlength="14" @input="maskCpf" />
+                <div class="checkout-field">
+                  <input v-model="form.cpf" type="text" id="f-cpf" class="checkout-input" placeholder=" " maxlength="14" @input="maskCpf" />
+                  <label for="f-cpf">CPF *</label>
+                </div>
               </div>
             </div>
           </div>
@@ -146,8 +154,8 @@
                   class="w-14 h-14 rounded-lg object-cover flex-shrink-0 hidden sm:block"
                 />
                 <div class="flex-1 min-w-0">
-                  <p class="font-medium text-primary-800 text-sm">{{ bump.productName }}</p>
-                  <p v-if="bump.description" class="text-xs text-steel mt-0.5 leading-relaxed">{{ bump.description }}</p>
+                  <p class="font-medium text-primary-800 text-sm">{{ bump.customTitle || bump.productName }}</p>
+                  <div v-if="bump.description" class="text-xs text-steel mt-0.5 leading-relaxed" v-html="bump.description" />
                   <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs text-steel line-through">{{ formatPrice(bump.originalPrice) }}</span>
                     <span class="text-sm font-bold text-coral">{{ formatPrice(bump.funnelPrice) }}</span>
@@ -191,32 +199,23 @@
             </div>
 
             <div v-show="paymentMethod === 'credit_card'" class="space-y-4">
-              <div>
-                <label class="checkout-label">Numero do cartao</label>
-                <div id="mp-card-number" class="mp-field" />
-              </div>
-              <div>
-                <label class="checkout-label">Nome do titular como aparece no cartao</label>
-                <input v-model="card.holderName" type="text" class="checkout-input" placeholder="Ex.: Maria Santos Pereira" />
+              <div id="mp-card-number" class="mp-field" />
+              <div class="checkout-field">
+                <input v-model="card.holderName" type="text" id="f-holder" class="checkout-input" placeholder=" " />
+                <label for="f-holder">Nome do titular como aparece no cartão</label>
               </div>
               <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="checkout-label">Vencimento</label>
-                  <div id="mp-expiration-date" class="mp-field" />
-                </div>
-                <div>
-                  <label class="checkout-label">Codigo de seguranca</label>
-                  <div id="mp-security-code" class="mp-field" />
-                </div>
+                <div id="mp-expiration-date" class="mp-field" />
+                <div id="mp-security-code" class="mp-field" />
               </div>
-              <div>
-                <label class="checkout-label">Parcelas</label>
-                <select v-model="card.installments" class="checkout-input">
+              <div class="checkout-field">
+                <select v-model="card.installments" id="f-inst" class="checkout-input">
                   <option v-for="opt in installmentOptions" :key="opt.installments" :value="opt.installments">
                     {{ opt.installments }}x de {{ formatPrice(opt.installment_amount) }}
                     {{ opt.installments > 1 ? `(Total: ${formatPrice(opt.total_amount)})` : '' }}
                   </option>
                 </select>
+                <label for="f-inst">Parcelas</label>
               </div>
             </div>
 
@@ -340,10 +339,6 @@
                 <span class="text-2xl font-bold text-coral">{{ formatPrice(orderTotal) }}</span>
               </div>
             </div>
-            <div class="mt-6 flex items-center gap-2 text-xs text-steel">
-              <i class="pi pi-lock text-teal" />
-              <span>Pagamento 100% seguro via MercadoPago</span>
-            </div>
           </div>
         </div>
       </div>
@@ -361,6 +356,7 @@ interface BumpInfo {
   productImageUrl: string | null
   originalPrice: number
   funnelPrice: number
+  customTitle: string | null
   description: string | null
   sortOrder: number
 }
@@ -764,13 +760,25 @@ function getStatusMessage(detail: string): string {
 </script>
 
 <style scoped>
-.checkout-label {
-  @apply block text-sm font-medium text-primary-700 mb-1;
+.checkout-field {
+  @apply relative;
+}
+.checkout-field > label {
+  @apply absolute left-4 text-sm text-primary-400 pointer-events-none transition-all duration-150;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.checkout-field > input:focus ~ label,
+.checkout-field > input:not(:placeholder-shown) ~ label,
+.checkout-field > select ~ label {
+  top: 10px;
+  transform: none;
+  @apply text-xs text-teal;
 }
 .checkout-input {
-  @apply w-full border border-sand-200 rounded-lg px-4 py-2.5 text-primary-800
+  @apply w-full border border-sand-200 rounded-lg px-4 pt-5 pb-2 text-primary-800
          focus:outline-none focus:ring-2 focus:ring-coral/40 focus:border-coral/40
-         placeholder:text-primary-300 transition-all;
+         placeholder:text-transparent transition-all;
 }
 .mp-field {
   @apply border border-sand-200 rounded-lg overflow-hidden;

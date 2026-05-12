@@ -26,17 +26,17 @@
     <div class="p-3 sm:p-4">
       <span
         v-if="product.categoryName"
-        class="text-[10px] sm:text-[11px] uppercase tracking-widest text-coral font-medium"
+        class="text-[9px] sm:text-[10px] uppercase tracking-widest text-coral font-medium"
       >
         {{ product.categoryName }}
       </span>
-      <h3 class="font-serif text-sm sm:text-lg text-teal mt-1 leading-snug line-clamp-2">
+      <h3 class="font-serif text-xs sm:text-sm text-teal mt-0.5 leading-snug line-clamp-2">
         {{ product.name }}
       </h3>
-      <p class="text-steel text-xs sm:text-sm mt-1 line-clamp-2 hidden sm:block">
+      <p class="text-steel text-[11px] sm:text-xs mt-0.5 line-clamp-2 hidden sm:block">
         {{ product.shortDescription || product.description }}
       </p>
-      <div v-if="product.totalReviews && product.totalReviews > 0" class="mt-1.5 sm:mt-2 flex items-center gap-1">
+      <div v-if="product.totalReviews && product.totalReviews > 0" class="mt-1 flex items-center gap-1">
         <div class="flex items-center gap-0.5">
           <i
             v-for="s in 5"
@@ -50,7 +50,7 @@
           ({{ product.totalReviews }})
         </span>
       </div>
-      <div class="mt-2 sm:mt-3 flex items-center justify-between">
+      <div class="mt-1.5 sm:mt-2 flex items-center justify-between">
         <span class="text-base sm:text-lg font-semibold text-coral">
           {{ formatPrice(product.price) }}
         </span>

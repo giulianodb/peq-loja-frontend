@@ -160,13 +160,24 @@
               </div>
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">Descricao</label>
+              <label class="block text-xs font-medium text-gray-500 mb-1">Título personalizado</label>
               <input
-                v-model="bump.description"
+                v-model="bump.customTitle"
                 type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
-                placeholder="Ex: Adicione este material complementar!"
+                placeholder="Ex: Sim! Quero o Material de Divisão"
               />
+              <p class="text-xs text-gray-400 mt-1">Exibido no lugar do nome do produto no checkout.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">Descrição (HTML)</label>
+              <textarea
+                v-model="bump.description"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
+                placeholder="Ex: Adicione este material com <strong>50% de desconto</strong>!"
+              />
+              <p class="text-xs text-gray-400 mt-1">Aceita HTML: &lt;strong&gt;, &lt;em&gt;, &lt;br&gt;, &lt;ul&gt;, etc.</p>
             </div>
           </div>
           <button
@@ -206,6 +217,7 @@ import type { Product, Page } from '~/types'
 interface BumpForm {
   productId: number | null
   price: number | null
+  customTitle: string
   description: string
   sortOrder: number
 }
@@ -229,7 +241,7 @@ interface FunnelData {
   headline: string | null
   description: string | null
   product: { id: number; funnelPrice: number }
-  bumps: { productId: number; funnelPrice: number; description: string | null; sortOrder: number }[]
+  bumps: { productId: number; funnelPrice: number; customTitle: string | null; description: string | null; sortOrder: number }[]
 }
 
 const props = defineProps<{
@@ -256,6 +268,7 @@ const form = reactive<FunnelForm>({
   bumps: props.funnel?.bumps?.map(b => ({
     productId: b.productId,
     price: b.funnelPrice,
+    customTitle: b.customTitle || '',
     description: b.description || '',
     sortOrder: b.sortOrder,
   })) || [],
@@ -283,7 +296,7 @@ function sanitizeSlug() {
 }
 
 function addBump() {
-  form.bumps.push({ productId: null, price: null, description: '', sortOrder: form.bumps.length })
+  form.bumps.push({ productId: null, price: null, customTitle: '', description: '', sortOrder: form.bumps.length })
 }
 
 function removeBump(index: number) {
@@ -308,6 +321,7 @@ function save() {
       .map(b => ({
         productId: b.productId,
         price: b.price,
+        customTitle: b.customTitle || null,
         description: b.description || null,
         sortOrder: b.sortOrder,
       })),

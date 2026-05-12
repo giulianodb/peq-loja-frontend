@@ -12,8 +12,8 @@
 
 <script setup lang="ts">
 const items = [
-  { icon: 'pi pi-lock',       label: 'Ambiente criptografado' },
-  { icon: 'pi pi-bolt',       label: 'Acesso imediato por e-mail' },
-  { icon: 'pi pi-headphones', label: 'Suporte rápido' },
+  { icon: 'pi pi-lock',    label: 'Ambiente criptografado' },
+  { icon: 'pi pi-bolt',    label: 'Acesso imediato' },
+  { icon: 'pi pi-shield',  label: 'Pagamento 100% seguro via MercadoPago' },
 ]
 </script>

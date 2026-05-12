@@ -5,10 +5,7 @@
     <!-- Mais Vendidos -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
       <div class="text-center mb-12">
-        <span class="text-coral text-sm font-medium tracking-widest uppercase">
-          Destaques
-        </span>
-        <h2 class="section-title mt-2">Mais Vendidos</h2>
+        <h2 class="section-title">Mais Vendidos</h2>
         <p class="mt-3 text-steel max-w-xl mx-auto">
           Os materiais que famílias e educadores mais amam
         </p>

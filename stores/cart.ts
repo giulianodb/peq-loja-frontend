@@ -13,14 +13,12 @@ export const useCartStore = defineStore('cart', {
   },
 
   actions: {
-    add(product: Product, quantity = 1) {
-      const existing = this.items.find((i) => i.product.id === product.id)
-      if (existing) {
-        existing.quantity += quantity
-      } else {
-        this.items.push({ product, quantity })
+    add(product: Product) {
+      const alreadyInCart = this.items.some((i) => i.product.id === product.id)
+      if (!alreadyInCart) {
+        this.items.push({ product, quantity: 1 })
+        this.persist()
       }
-      this.persist()
     },
 
     remove(productId: number) {

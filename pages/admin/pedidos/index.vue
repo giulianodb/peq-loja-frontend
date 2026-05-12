@@ -121,6 +121,7 @@ const tabs = [
   { value: 'PENDING', label: 'Pendentes' },
   { value: 'CONFIRMED', label: 'Confirmados' },
   { value: 'CANCELLED', label: 'Cancelados' },
+  { value: 'REFUNDED', label: 'Reembolsados' },
 ]
 
 const activeTab = ref((route.query.status as string) || '')
@@ -132,6 +133,7 @@ const statuses = [
   { value: 'SHIPPED', label: 'Enviado' },
   { value: 'DELIVERED', label: 'Entregue' },
   { value: 'CANCELLED', label: 'Cancelado' },
+  { value: 'REFUNDED', label: 'Reembolsado' },
 ]
 
 function setTab(status: string) {
@@ -202,6 +204,7 @@ function statusClass(status: string) {
     SHIPPED: 'bg-purple-100 text-purple-700',
     DELIVERED: 'bg-green-100 text-green-700',
     CANCELLED: 'bg-red-100 text-red-500',
+    REFUNDED: 'bg-gray-100 text-gray-600',
   }
   return map[status] || 'bg-gray-100 text-gray-600'
 }
