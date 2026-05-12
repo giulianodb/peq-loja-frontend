@@ -37,6 +37,8 @@ export default defineNuxtConfig({
       'Inter': [400, 500],
     },
     display: 'swap',
+    download: true,
+    inject: true,
   },
 
   app: {
@@ -48,6 +50,9 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
         { rel: 'preload', as: 'image', href: '/images/logo-coral.webp', type: 'image/webp' },
+        { rel: 'preload', as: 'font', href: '/primeicons/fonts/primeicons.woff2', type: 'font/woff2', crossorigin: '' },
+        { rel: 'preconnect', href: 'https://sdk.mercadopago.com' },
+        { rel: 'preconnect', href: 'https://secure.mlstatic.com' },
       ],
     },
   },
