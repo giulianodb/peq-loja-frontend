@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-const open = ref<number | null>(0)
+const open = ref<number | null>(null)
 
 function toggle(i: number) {
   open.value = open.value === i ? null : i
