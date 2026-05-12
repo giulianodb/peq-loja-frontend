@@ -86,7 +86,7 @@ function goToPage(p: number) {
 async function fetchProducts() {
   loading.value = true
   try {
-    let url = `${config.public.apiBase}/api/products?page=${page.value}&size=12&sort=createdAt,desc`
+    let url = `${config.public.apiBase}/api/products?page=${page.value}&size=12&sort=category.name,asc&sort=name,asc`
     if (selectedCategory.value) {
       url += `&categoryId=${selectedCategory.value}`
     }

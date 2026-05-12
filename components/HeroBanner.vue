@@ -27,9 +27,9 @@
         <div class="order-1 md:order-2 flex justify-center">
           <div class="relative">
             <img
-              src="/images/simbolo-coral.png"
+              src="/images/hero-banner.png"
               alt="Pequenas Trilhas"
-              class="w-40 sm:w-56 md:w-80 h-auto drop-shadow-xl"
+              class="w-56 sm:w-72 md:w-[420px] h-auto drop-shadow-xl"
             />
             <!-- Decorative dots -->
             <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-salmon/30 rounded-full -z-10" />

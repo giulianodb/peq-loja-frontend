@@ -77,7 +77,7 @@ onMounted(async () => {
   try {
     const [featuredData, allData] = await Promise.all([
       $fetch<Product[]>(`${config.public.apiBase}/api/products/featured`),
-      $fetch<Page<Product>>(`${config.public.apiBase}/api/products?size=8&sort=createdAt,desc`),
+      $fetch<Page<Product>>(`${config.public.apiBase}/api/products?size=8&sort=category.name,asc&sort=name,asc`),
     ])
     featured.value = featuredData
     allProducts.value = allData.content
