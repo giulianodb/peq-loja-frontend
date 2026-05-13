@@ -127,10 +127,10 @@
 
             <!-- Cabeçalho chamativo -->
             <div class="bg-gradient-to-r from-coral/15 to-salmon/20 border-b border-coral/20 px-4 py-3.5 flex items-start gap-3">
-              <span class="text-xl leading-none mt-0.5">🎁</span>
+              <span class="text-xl leading-none mt-0.5">📖</span>
               <div>
-                <p class="text-sm font-semibold text-teal leading-snug">Quase lá! Leve mais por menos antes de finalizar</p>
-                <p class="text-xs text-steel mt-0.5">Selecionamos materiais que combinam com a sua escolha — com desconto especial</p>
+                <p class="text-sm font-semibold text-teal leading-snug">Aproveite para complementar o aprendizado</p>
+                <p class="text-xs text-steel mt-0.5">Selecionamos materiais que combinam com a sua escolha e ajudam a reforçar outras habilidades importantes, com desconto especial neste pedido.</p>
               </div>
             </div>
 
