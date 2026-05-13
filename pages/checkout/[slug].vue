@@ -130,7 +130,6 @@
               <span class="text-xl leading-none mt-0.5">📖</span>
               <div>
                 <p class="text-sm font-semibold text-teal leading-snug">Aproveite para complementar o aprendizado</p>
-                <p class="text-xs text-steel mt-0.5">Selecionamos materiais que combinam com a sua escolha e ajudam a reforçar outras habilidades importantes, com desconto especial neste pedido.</p>
               </div>
             </div>
 
