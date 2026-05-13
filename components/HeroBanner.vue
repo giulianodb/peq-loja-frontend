@@ -8,13 +8,9 @@
             Materiais Educativos Digitais
           </span>
           <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl text-teal leading-[1.1] tracking-tight">
-            Aprendizados que <br />
-            <span class="text-coral">deixam marcas</span>
+            Pratique em casa o que <br />
+            <span class="text-coral">faz diferença na escola</span>
           </h1>
-          <p class="mt-6 text-primary-600 text-lg leading-relaxed max-w-lg mx-auto md:mx-0">
-            Descubra materiais em PDF cuidadosamente elaborados para acompanhar
-            o desenvolvimento das crianças com afeto e intencionalidade.
-          </p>
           <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
             <NuxtLink to="/loja" class="btn-primary">
               <i class="pi pi-arrow-right mr-2" />
@@ -31,8 +27,8 @@
               <img
                 src="/images/hero-banner.png"
                 alt="Pequenas Trilhas"
-                width="933"
-                height="1168"
+                width="840"
+                height="1120"
                 fetchpriority="high"
                 class="w-56 sm:w-72 md:w-[420px] h-auto drop-shadow-xl"
                 :class="heroLoaded ? 'opacity-100' : 'opacity-0'"
