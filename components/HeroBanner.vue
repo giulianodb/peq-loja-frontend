@@ -1,43 +1,51 @@
 <template>
-  <section class="relative w-full min-h-[70vh] md:min-h-[620px] flex items-center overflow-hidden bg-teal">
+  <section class="relative bg-warm overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-2 gap-8 items-center min-h-[500px] md:min-h-[600px] py-12">
+        <!-- Text -->
+        <div class="order-2 md:order-1 text-center md:text-left">
+          <span class="inline-block text-coral text-sm font-medium tracking-widest uppercase mb-4">
+            Materiais Educativos Digitais
+          </span>
+          <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl text-teal leading-[1.1] tracking-tight">
+            Pratique em casa o que <br />
+            <span class="text-coral">faz diferença na escola</span>
+          </h1>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+            <NuxtLink to="/loja" class="btn-primary">
+              <i class="pi pi-arrow-right mr-2" />
+              Ver Materiais
+            </NuxtLink>
+          </div>
+        </div>
 
-    <!-- Imagem de fundo full-width -->
-    <picture>
-      <source srcset="/images/hero-banner.webp" type="image/webp" />
-      <img
-        src="/images/hero-banner.png"
-        alt=""
-        role="presentation"
-        width="840"
-        height="1120"
-        fetchpriority="high"
-        class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700"
-        :class="loaded ? 'opacity-100' : 'opacity-0'"
-        @load="loaded = true"
-      />
-    </picture>
-
-    <!-- Overlay para garantir leitura do texto -->
-    <div class="absolute inset-0 bg-gradient-to-b from-teal/70 via-teal/55 to-teal/40" />
-
-    <!-- Conteúdo sobreposto -->
-    <div class="relative w-full max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
-      <span class="inline-block text-salmon text-xs sm:text-sm font-medium tracking-widest uppercase mb-5">
-        Materiais Educativos Digitais
-      </span>
-      <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl text-white leading-[1.15] tracking-tight mb-8">
-        Pratique em casa o que <br />
-        <span class="text-salmon">faz diferença na escola</span>
-      </h1>
-      <NuxtLink to="/loja" class="btn-primary">
-        <i class="pi pi-arrow-right mr-2" />
-        Ver Materiais
-      </NuxtLink>
+        <!-- Visual -->
+        <div class="order-1 md:order-2 flex justify-center">
+          <div class="relative">
+            <picture>
+              <source srcset="/images/hero-banner.webp" type="image/webp" />
+              <img
+                src="/images/hero-banner.png"
+                alt="Pequenas Trilhas"
+                width="840"
+                height="1120"
+                fetchpriority="high"
+                class="w-56 sm:w-72 md:w-[420px] h-auto drop-shadow-xl"
+                :class="heroLoaded ? 'opacity-100' : 'opacity-0'"
+                style="transition: opacity 0.5s ease"
+                @load="heroLoaded = true"
+              />
+            </picture>
+            <!-- Decorative dots -->
+            <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-salmon/30 rounded-full -z-10" />
+            <div class="absolute -top-4 -right-4 w-16 h-16 bg-sand-200 rounded-full -z-10" />
+          </div>
+        </div>
+      </div>
     </div>
-
   </section>
 </template>
 
 <script setup lang="ts">
-const loaded = ref(false)
+const heroLoaded = ref(false)
 </script>
