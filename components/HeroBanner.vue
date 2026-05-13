@@ -1,15 +1,15 @@
 <template>
   <section class="relative bg-warm overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="grid md:grid-cols-2 gap-8 items-center min-h-[500px] md:min-h-[600px] py-12">
+      <div class="grid md:grid-cols-2 gap-6 items-center min-h-[340px] md:min-h-[480px] py-8 md:py-12">
         <!-- Text -->
         <div class="order-2 md:order-1 text-center md:text-left">
           <span class="inline-block text-coral text-sm font-medium tracking-widest uppercase mb-4">
             Materiais Educativos Digitais
           </span>
-          <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl text-teal leading-[1.1] tracking-tight">
-            Pratique em casa o que <br />
-            <span class="text-coral">faz diferença na escola</span>
+          <h1 class="font-serif text-2xl sm:text-4xl lg:text-5xl text-teal leading-[1.15] tracking-tight">
+            Pratique em casa o que faz <br class="hidden sm:block" />
+            <span class="text-coral">diferença na escola</span>
           </h1>
           <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
             <NuxtLink to="/loja" class="btn-primary">
