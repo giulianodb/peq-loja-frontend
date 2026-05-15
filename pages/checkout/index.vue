@@ -118,10 +118,10 @@
                 <input
                   v-model="form.cpf"
                   type="text"
+                  inputmode="numeric"
                   :class="['checkout-input', cpfError ? 'border-red-400 focus:ring-red-300 focus:border-red-400' : '']"
                   placeholder="000.000.000-00"
                   maxlength="14"
-                  @input="maskCpf"
                   @blur="validateCpf"
                 />
                 <p v-if="cpfError" class="mt-1 text-xs text-red-500 flex items-center gap-1">
@@ -388,14 +388,13 @@ function formatPrice(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
 }
 
-function maskCpf(e: Event) {
-  const input = e.target as HTMLInputElement
-  let v = input.value.replace(/\D/g, '').slice(0, 11)
+watch(() => form.cpf, (val) => {
+  let v = val.replace(/\D/g, '').slice(0, 11)
   if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4')
   else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3')
   else if (v.length > 3) v = v.replace(/(\d{3})(\d+)/, '$1.$2')
-  form.cpf = v
-}
+  if (v !== val) form.cpf = v
+})
 
 function maskPhone(e: Event) {
   const input = e.target as HTMLInputElement
