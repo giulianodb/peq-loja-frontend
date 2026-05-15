@@ -22,9 +22,12 @@
 
     <!-- Resultado: Pix pendente (QR Code) -->
     <div v-else-if="paymentResult?.pixQrCode && !pixConfirmed" class="max-w-lg mx-auto text-center py-4">
-      <div class="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="pi pi-qrcode text-3xl text-teal" />
+      <div class="flex items-center justify-center gap-2 text-green-600 bg-green-50 border border-green-100 rounded-full px-4 py-2 w-fit mx-auto mb-5">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        <span class="text-xs font-medium text-green-700">Pagamento seguro por</span>
+        <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-6 opacity-80" />
       </div>
+
       <h2 class="font-serif text-2xl text-teal mb-2">Pague com Pix</h2>
       <p class="text-steel text-sm mb-6">Pedido <span class="font-semibold text-teal">#{{ paymentResult.orderId }}</span></p>
 
@@ -46,15 +49,9 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-center gap-2 text-xs text-steel mb-6">
+      <div class="flex items-center justify-center gap-2 text-xs text-steel">
         <i class="pi pi-spin pi-spinner text-teal" />
         <span>Aguardando confirmação do pagamento...</span>
-      </div>
-
-      <div class="flex items-center justify-center gap-2 text-green-600 bg-green-50 border border-green-100 rounded-full px-4 py-2 w-fit mx-auto">
-        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-        <span class="text-xs font-medium text-green-700">Pagamento seguro por</span>
-        <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-4 opacity-80" />
       </div>
     </div>
 
@@ -118,7 +115,18 @@
               </div>
               <div class="sm:col-span-2">
                 <label class="checkout-label">CPF *</label>
-                <input v-model="form.cpf" type="text" class="checkout-input" placeholder="000.000.000-00" maxlength="14" @input="maskCpf" />
+                <input
+                  v-model="form.cpf"
+                  type="text"
+                  :class="['checkout-input', cpfError ? 'border-red-400 focus:ring-red-300 focus:border-red-400' : '']"
+                  placeholder="000.000.000-00"
+                  maxlength="14"
+                  @input="maskCpf"
+                  @blur="validateCpf"
+                />
+                <p v-if="cpfError" class="mt-1 text-xs text-red-500 flex items-center gap-1">
+                  <i class="pi pi-exclamation-circle" /> CPF inválido. Verifique o número digitado.
+                </p>
               </div>
             </div>
           </div>
@@ -348,8 +356,28 @@ const finalTotal = computed(() => {
 let mpInstance: any = null
 let cardNumberField: any = null
 
+const cpfError = ref(false)
+
+function isValidCpf(cpf: string): boolean {
+  const digits = cpf.replace(/\D/g, '')
+  if (digits.length !== 11) return false
+  if (/^(\d)\1{10}$/.test(digits)) return false
+  const calc = (factor: number) => {
+    let sum = 0
+    for (let i = 0; i < factor - 1; i++) sum += parseInt(digits[i]) * (factor - i)
+    const rest = (sum * 10) % 11
+    return rest >= 10 ? 0 : rest
+  }
+  return calc(10) === parseInt(digits[9]) && calc(11) === parseInt(digits[10])
+}
+
+function validateCpf() {
+  const digits = form.cpf.replace(/\D/g, '')
+  cpfError.value = digits.length === 11 && !isValidCpf(form.cpf)
+}
+
 const isFormValid = computed(() => {
-  const base = form.name.trim().length > 0 && form.email.includes('@') && form.cpf.replace(/\D/g, '').length === 11
+  const base = form.name.trim().length > 0 && form.email.includes('@') && isValidCpf(form.cpf)
   if (paymentMethod.value === 'credit_card') {
     return base && card.holderName.trim().length > 0
   }
@@ -629,6 +657,7 @@ async function submitPixPayment() {
   paymentResult.value = response
   cart.clear()
   if (response.pixQrCode && response.orderId) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     startPixPolling(response.orderId)
   }
 }
