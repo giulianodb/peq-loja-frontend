@@ -1,6 +1,15 @@
 <template>
   <div>
-    <h1 class="text-2xl font-serif font-bold text-gray-900 mb-6">Pedidos</h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-serif font-bold text-gray-900">Pedidos</h1>
+      <NuxtLink
+        to="/admin/pedidos/novo"
+        class="flex items-center gap-2 px-4 py-2 bg-teal text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
+      >
+        <i class="pi pi-plus text-xs" />
+        Novo pedido
+      </NuxtLink>
+    </div>
 
     <!-- Filtro por status -->
     <div class="flex gap-2 flex-wrap mb-4">
