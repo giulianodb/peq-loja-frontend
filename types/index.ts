@@ -75,6 +75,9 @@ export interface Order {
   createdAt: string
   checkoutUrl: string | null
   paymentMethod: string | null
+  guestCpf: string | null
+  couponCode: string | null
+  discountAmount: number | null
 }
 
 export interface Page<T> {

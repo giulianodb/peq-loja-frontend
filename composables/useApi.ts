@@ -1,6 +1,7 @@
 export function useApi() {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
+  const router = useRouter()
 
   async function $fetch<T>(path: string, options: any = {}): Promise<T> {
     const headers: Record<string, string> = {
@@ -15,12 +16,19 @@ export function useApi() {
       headers['Content-Type'] = 'application/json'
     }
 
-    const response = await globalThis.$fetch<T>(`${config.public.apiBase}${path}`, {
-      ...options,
-      headers,
-    })
-
-    return response
+    try {
+      const response = await globalThis.$fetch<T>(`${config.public.apiBase}${path}`, {
+        ...options,
+        headers,
+      })
+      return response
+    } catch (err: any) {
+      if (err?.response?.status === 401 || err?.status === 401) {
+        authStore.logout()
+        await router.push('/login')
+      }
+      throw err
+    }
   }
 
   return { $fetch }

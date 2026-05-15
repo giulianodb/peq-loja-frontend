@@ -152,6 +152,7 @@ async function submit() {
     })
 
     success.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     setTimeout(() => navigateTo('/loja'), 4000)
   } catch {
     error.value = 'Erro ao enviar avaliação. Tente novamente.'

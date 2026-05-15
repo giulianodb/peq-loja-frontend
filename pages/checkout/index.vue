@@ -21,7 +21,7 @@
     </div>
 
     <!-- Resultado: Pix pendente (QR Code) -->
-    <div v-else-if="paymentResult?.pixQrCode && !pixConfirmed" class="max-w-lg mx-auto text-center py-12">
+    <div v-else-if="paymentResult?.pixQrCode && !pixConfirmed" class="max-w-lg mx-auto text-center py-4">
       <div class="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-4">
         <i class="pi pi-qrcode text-3xl text-teal" />
       </div>
@@ -46,9 +46,15 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-center gap-2 text-xs text-steel">
+      <div class="flex items-center justify-center gap-2 text-xs text-steel mb-6">
         <i class="pi pi-spin pi-spinner text-teal" />
         <span>Aguardando confirmação do pagamento...</span>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 text-green-600 bg-green-50 border border-green-100 rounded-full px-4 py-2 w-fit mx-auto">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        <span class="text-xs font-medium text-green-700">Pagamento seguro por</span>
+        <img src="/images/mercadopago-logo.svg" alt="Mercado Pago" class="h-4 opacity-80" />
       </div>
     </div>
 

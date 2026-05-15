@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   googleFonts: {
     families: {
       'Playfair Display': [400, 700],
-      'Inter': [400, 500],
+      'Quicksand': [400, 500, 600, 700],
     },
     display: 'swap',
     download: true,

@@ -115,7 +115,7 @@ async function submit() {
     auth.setAuth(data)
 
     const redirect = route.query.redirect as string
-    router.push(redirect || '/')
+    router.push(redirect || '/minha-conta/materiais')
   } catch (e: any) {
     error.value = e?.data?.error || 'Erro ao processar. Verifique seus dados.'
   } finally {

@@ -72,10 +72,6 @@
           <span class="text-primary-700">Subtotal ({{ cart.count }} itens)</span>
           <span class="font-semibold text-teal">{{ formatPrice(cart.total) }}</span>
         </div>
-        <div class="flex justify-between items-center mb-4 pb-4 border-b border-sand-200">
-          <span class="text-primary-700">Entrega</span>
-          <span class="text-coral font-medium">Grátis (digital)</span>
-        </div>
         <div class="flex justify-between items-center">
           <span class="text-lg font-serif text-teal">Total</span>
           <span class="text-2xl font-bold text-coral">{{ formatPrice(cart.total) }}</span>

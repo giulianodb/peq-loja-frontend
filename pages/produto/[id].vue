@@ -97,6 +97,7 @@
 
         <div class="mt-4">
           <button
+            ref="mainAddBtn"
             @click="addToCart"
             :disabled="product.stock <= 0"
             class="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
@@ -154,6 +155,82 @@
         </div>
       </div>
     </div>
+
+    <!-- Floating: desktop card (right side) -->
+    <Transition name="float-right">
+      <div
+        v-if="showFloating && product && product.stock > 0"
+        class="hidden md:flex fixed right-6 bottom-8 z-40 flex-col w-64 bg-white rounded-2xl shadow-2xl border border-sand-200 overflow-hidden"
+      >
+        <div class="flex items-center gap-3 p-4 border-b border-sand-100">
+          <div class="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-light">
+            <img
+              v-if="product.imageUrl"
+              :src="resolveUrl(product.imageUrl)"
+              :alt="product.name"
+              class="w-full h-full object-cover"
+            />
+            <div v-else class="w-full h-full flex items-center justify-center">
+              <i class="pi pi-file-pdf text-lg text-salmon" />
+            </div>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs text-steel truncate">{{ product.categoryName }}</p>
+            <p class="text-sm font-serif text-teal leading-snug line-clamp-2">{{ product.name }}</p>
+          </div>
+        </div>
+        <div class="p-4">
+          <p class="text-xl font-bold text-coral mb-3">{{ formatPrice(product.price) }}</p>
+          <button
+            @click="addToCart"
+            class="w-full btn-primary text-sm py-2.5"
+          >
+            <i class="pi pi-shopping-bag mr-2" />
+            {{ added ? 'Adicionado!' : 'Adicionar ao Carrinho' }}
+          </button>
+          <Transition name="fade">
+            <NuxtLink
+              v-if="added"
+              to="/carrinho"
+              class="mt-2 flex items-center justify-center gap-1 text-xs text-coral underline font-medium"
+            >
+              <i class="pi pi-arrow-right text-[10px]" /> Ver carrinho
+            </NuxtLink>
+          </Transition>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Floating: mobile bottom bar -->
+    <Transition name="float-up">
+      <div
+        v-if="showFloating && product && product.stock > 0"
+        class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-sand-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3"
+      >
+        <div class="flex-1 min-w-0">
+          <p class="text-xs text-steel truncate">{{ product.name }}</p>
+          <p class="text-lg font-bold text-coral leading-none mt-0.5">{{ formatPrice(product.price) }}</p>
+        </div>
+        <button
+          @click="addToCart"
+          class="btn-primary text-sm py-2.5 px-5 flex-shrink-0"
+        >
+          <i class="pi pi-shopping-bag mr-1.5" />
+          {{ added ? 'Adicionado!' : 'Adicionar' }}
+        </button>
+      </div>
+    </Transition>
+
+    <!-- Related products -->
+    <section v-if="relatedProducts.length > 0" class="mt-16 border-t border-border pt-12">
+      <div class="mb-8">
+        <p class="text-xs uppercase tracking-widest text-coral font-medium mb-1">Da mesma categoria</p>
+        <h2 class="section-title text-2xl">Você também pode gostar</h2>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" :class="relatedProducts.length === 1 ? 'sm:grid-cols-1 md:grid-cols-2 max-w-xs' : ''">
+        <ProductCard v-for="p in relatedProducts" :key="p.id" :product="p" />
+      </div>
+    </section>
 
     <!-- Reviews section -->
     <section v-if="product" class="mt-20 border-t border-border pt-12">
@@ -296,6 +373,9 @@ const loading = ref(true)
 const product = ref<Product | null>(null)
 const added = ref(false)
 const activeIndex = ref(0)
+const showFloating = ref(false)
+const mainAddBtn = ref<HTMLElement>()
+const relatedProducts = ref<Product[]>([])
 
 // Reviews
 interface ReviewItem {
@@ -373,6 +453,20 @@ function formatReviewDate(date: string) {
   })
 }
 
+async function loadRelated() {
+  if (!product.value?.categoryId) return
+  try {
+    const data = await $fetch<{ content: Product[] }>(
+      `${config.public.apiBase}/api/products?categoryId=${product.value.categoryId}&size=5`
+    )
+    relatedProducts.value = data.content
+      .filter(p => p.id !== product.value!.id)
+      .slice(0, 2)
+  } catch {
+    // ignore
+  }
+}
+
 async function loadReviews() {
   if (!product.value) return
   try {
@@ -433,12 +527,21 @@ onMounted(async () => {
     if (product.value) {
       const { viewContent } = useTracking()
       viewContent(product.value.name, product.value.id, product.value.price)
-      await loadReviews()
+      await Promise.all([loadReviews(), loadRelated()])
     }
   } catch {
     // not found
   } finally {
     loading.value = false
+    await nextTick()
+    if (mainAddBtn.value) {
+      const observer = new IntersectionObserver(
+        ([entry]) => { showFloating.value = !entry.isIntersecting },
+        { threshold: 0 }
+      )
+      observer.observe(mainAddBtn.value)
+      onUnmounted(() => observer.disconnect())
+    }
   }
 })
 </script>
@@ -456,6 +559,15 @@ onMounted(async () => {
 .product-description :deep(h1),
 .product-description :deep(h2),
 .product-description :deep(h3) { font-weight: 700; margin: 0.75rem 0 0.25rem; }
+
+.float-right-enter-active, .float-right-leave-active { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.float-right-enter-from, .float-right-leave-to { opacity: 0; transform: translateX(20px) scale(0.95); }
+
+.float-up-enter-active, .float-up-leave-active { transition: all 0.25s ease; }
+.float-up-enter-from, .float-up-leave-to { opacity: 0; transform: translateY(100%); }
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 
 .slide-enter-active,
 .slide-leave-active {

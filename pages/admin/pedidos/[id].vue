@@ -25,6 +25,13 @@
               <p class="font-medium text-gray-900">{{ formatCurrency(item.subtotal) }}</p>
             </div>
           </div>
+          <div v-if="order.couponCode && order.discountAmount" class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100 text-sm">
+            <span class="text-gray-500 flex items-center gap-1.5">
+              Cupom
+              <span class="font-mono font-semibold text-teal bg-teal/10 px-1.5 py-0.5 rounded text-xs">{{ order.couponCode }}</span>
+            </span>
+            <span class="text-green-600 font-medium">-{{ formatCurrency(order.discountAmount) }}</span>
+          </div>
           <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-200">
             <span class="text-lg font-semibold text-gray-900">Total</span>
             <span class="text-lg font-bold text-teal">{{ formatCurrency(order.total) }}</span>
@@ -45,6 +52,10 @@
                 <dt class="text-gray-500">Email</dt>
                 <dd class="font-medium text-gray-900 break-all">{{ order.guestEmail }}</dd>
               </div>
+              <div v-if="order.guestCpf">
+                <dt class="text-gray-500">CPF</dt>
+                <dd class="font-medium text-gray-900">{{ order.guestCpf }}</dd>
+              </div>
               <div>
                 <dt class="text-gray-500">Data</dt>
                 <dd class="font-medium text-gray-900">{{ formatDate(order.createdAt) }}</dd>
@@ -52,6 +63,17 @@
               <div v-if="order.paymentMethod">
                 <dt class="text-gray-500">Pagamento</dt>
                 <dd class="font-medium text-gray-900">{{ order.paymentMethod }}</dd>
+              </div>
+              <div v-if="order.couponCode">
+                <dt class="text-gray-500">Cupom</dt>
+                <dd class="flex items-center gap-2 flex-wrap">
+                  <span class="font-mono font-semibold text-teal bg-teal/10 px-2 py-0.5 rounded text-xs tracking-wider">
+                    {{ order.couponCode }}
+                  </span>
+                  <span v-if="order.discountAmount" class="text-green-600 font-medium text-xs">
+                    -{{ formatCurrency(order.discountAmount) }}
+                  </span>
+                </dd>
               </div>
             </dl>
           </div>

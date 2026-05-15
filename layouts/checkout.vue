@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen flex flex-col bg-gradient-to-br from-sand-100 via-white to-sand-100">
     <!-- Header mínimo -->
-    <header class="py-6 text-center">
+    <header class="py-3 text-center">
       <NuxtLink to="/">
         <picture>
           <source srcset="/images/logo-coral.webp" type="image/webp" />
           <img
             src="/images/logo-coral.png"
             alt="Pequenas Trilhas"
-            class="h-12 w-auto mx-auto"
+            class="h-10 w-auto mx-auto"
             width="276"
             height="120"
             fetchpriority="high"

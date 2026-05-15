@@ -1,7 +1,7 @@
 <template>
   <section class="relative bg-warm overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="grid md:grid-cols-2 gap-6 items-center min-h-[340px] md:min-h-[480px] py-8 md:py-12">
+      <div class="grid md:grid-cols-2 gap-6 items-center min-h-[260px] md:min-h-[360px] py-6 md:py-8">
         <!-- Text -->
         <div class="order-2 md:order-1 text-center md:text-left">
           <span class="inline-block text-coral text-sm font-medium tracking-widest uppercase mb-4">
@@ -11,12 +11,6 @@
             Pratique em casa o que faz <br class="hidden sm:block" />
             <span class="text-coral">diferença na escola</span>
           </h1>
-          <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-            <NuxtLink to="/loja" class="btn-primary">
-              <i class="pi pi-arrow-right mr-2" />
-              Ver Materiais
-            </NuxtLink>
-          </div>
         </div>
 
         <!-- Visual -->

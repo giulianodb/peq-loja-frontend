@@ -24,12 +24,7 @@
           <img
             src="/images/logo-teal.png"
             alt="Pequenas Trilhas"
-            class="h-10 md:h-14 w-auto hidden sm:block"
-          />
-          <img
-            src="/images/simbolo-teal.png"
-            alt="Pequenas Trilhas"
-            class="h-9 w-auto sm:hidden"
+            class="h-8 sm:h-10 md:h-14 w-auto"
           />
         </NuxtLink>
 
