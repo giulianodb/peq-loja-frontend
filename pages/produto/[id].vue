@@ -227,7 +227,7 @@
         <p class="text-xs uppercase tracking-widest text-coral font-medium mb-1">Da mesma categoria</p>
         <h2 class="section-title text-2xl">Você também pode gostar</h2>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" :class="relatedProducts.length === 1 ? 'sm:grid-cols-1 md:grid-cols-2 max-w-xs' : ''">
+      <div class="grid grid-cols-2 gap-4" :class="relatedProducts.length === 1 ? 'max-w-[220px]' : 'md:max-w-md'">
         <ProductCard v-for="p in relatedProducts" :key="p.id" :product="p" />
       </div>
     </section>
