@@ -447,6 +447,7 @@ let countdownInterval: ReturnType<typeof setInterval> | null = null
 let mpInstance: any = null
 let cardNumberField: any = null
 let mpInitialized = false
+let cardPaymentInfoFired = false
 
 const selectedBumpsList = computed(() =>
   funnel.value?.bumps.filter(b => selectedBumps.has(b.id)) || []
@@ -604,6 +605,17 @@ async function initMercadoPago() {
             card.installments = 1
           }
         } catch (_) {}
+      }
+    })
+
+    cardNumberField.on('validityChange', (data: any) => {
+      if (!cardPaymentInfoFired && data.errorMessages?.length === 0) {
+        cardPaymentInfoFired = true
+        const { addPaymentInfo } = useTracking()
+        addPaymentInfo(orderTotal.value, [
+          { id: funnel.value!.product.id, name: funnel.value!.product.name, price: funnel.value!.product.funnelPrice, quantity: 1 },
+          ...selectedBumpsList.value.map(b => ({ id: b.productId, name: b.productName, price: b.funnelPrice, quantity: 1 })),
+        ])
       }
     })
   } catch (e) {
@@ -783,6 +795,14 @@ async function submitPixPayment() {
     method: 'POST',
     body: JSON.stringify(body),
   })
+  if (response.pixQrCode) {
+    const { addPaymentInfo } = useTracking()
+    addPaymentInfo(orderTotal.value, [
+      { id: funnel.value!.product.id, name: funnel.value!.product.name, price: funnel.value!.product.funnelPrice, quantity: 1 },
+      ...selectedBumpsList.value.map(b => ({ id: b.productId, name: b.productName, price: b.funnelPrice, quantity: 1 })),
+    ])
+  }
+
   paymentResult.value = response
   if (response.pixQrCode && response.orderId) {
     window.scrollTo({ top: 0, behavior: 'smooth' })

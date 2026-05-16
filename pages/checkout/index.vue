@@ -355,6 +355,7 @@ const finalTotal = computed(() => {
 
 let mpInstance: any = null
 let cardNumberField: any = null
+let cardPaymentInfoFired = false
 
 const cpfError = ref(false)
 
@@ -522,6 +523,16 @@ onMounted(async () => {
         } catch (_) {}
       }
     })
+
+    cardNumberField.on('validityChange', (data: any) => {
+      if (!cardPaymentInfoFired && data.errorMessages?.length === 0) {
+        cardPaymentInfoFired = true
+        const { addPaymentInfo } = useTracking()
+        addPaymentInfo(finalTotal.value, cart.items.map(i => ({
+          id: i.product.id, name: i.product.name, price: i.product.price, quantity: i.quantity,
+        })))
+      }
+    })
   } catch (e) {
     console.error('Erro ao inicializar MercadoPago:', e)
     error.value = 'Erro ao carregar formulário de pagamento.'
@@ -652,6 +663,13 @@ async function submitPixPayment() {
     method: 'POST',
     body: JSON.stringify(body),
   })
+
+  if (response.pixQrCode) {
+    const { addPaymentInfo } = useTracking()
+    addPaymentInfo(finalTotal.value, cart.items.map(i => ({
+      id: i.product.id, name: i.product.name, price: i.product.price, quantity: i.quantity,
+    })))
+  }
 
   paymentResult.value = response
   cart.clear()

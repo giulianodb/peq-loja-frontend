@@ -131,12 +131,13 @@
               />
               <div
                 v-if="showProductResults && productResults.length"
+                @click.stop
                 class="absolute z-10 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
               >
                 <button
                   v-for="p in productResults"
                   :key="p.id"
-                  @mousedown.prevent="addProduct(p)"
+                  @click.stop="addProduct(p)"
                   class="w-full flex items-center justify-between px-3 py-2.5 hover:bg-gray-50 text-left border-b border-gray-100 last:border-0"
                 >
                   <span class="text-sm text-gray-800">{{ p.name }}</span>

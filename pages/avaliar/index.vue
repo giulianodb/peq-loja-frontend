@@ -205,7 +205,7 @@ onMounted(async () => {
     .filter((r): r is PromiseFulfilledResult<Product> => r.status === 'fulfilled')
     .map(r => r.value)
 
-  if (products.value.length === 1) {
+  if (products.value.length > 0) {
     selectedProduct.value = products.value[0]
   }
 

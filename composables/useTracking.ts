@@ -68,6 +68,21 @@ export function useTracking() {
     })
   }
 
+  function addPaymentInfo(total: number, items: { id: number; name: string; price: number; quantity: number }[]) {
+    fbq('track', 'AddPaymentInfo', {
+      content_ids: items.map(i => String(i.id)),
+      content_type: 'product',
+      num_items: items.length,
+      value: total,
+      currency: 'BRL',
+    })
+    gtag('event', 'add_payment_info', {
+      items: items.map(i => ({ item_id: String(i.id), item_name: i.name, price: i.price, quantity: i.quantity })),
+      currency: 'BRL',
+      value: total,
+    })
+  }
+
   function purchase(orderId: number, total: number, items: { id: number; name: string; price: number; quantity: number }[]) {
     fbq('track', 'Purchase', {
       content_ids: items.map(i => String(i.id)),
@@ -84,5 +99,5 @@ export function useTracking() {
     })
   }
 
-  return { pageView, viewContent, addToCart, initiateCheckout, purchase }
+  return { pageView, viewContent, addToCart, initiateCheckout, addPaymentInfo, purchase }
 }

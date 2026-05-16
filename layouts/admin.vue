@@ -68,6 +68,7 @@ const menuItems = [
   { to: '/admin', icon: 'pi pi-chart-bar', label: 'Dashboard' },
   { to: '/admin/produtos', icon: 'pi pi-box', label: 'Produtos' },
   { to: '/admin/pedidos', icon: 'pi pi-shopping-bag', label: 'Pedidos' },
+  { to: '/admin/clientes', icon: 'pi pi-users', label: 'Clientes' },
   { to: '/admin/checkouts', icon: 'pi pi-megaphone', label: 'Checkouts' },
   { to: '/admin/categorias', icon: 'pi pi-tag', label: 'Categorias' },
   { to: '/admin/cupons', icon: 'pi pi-ticket', label: 'Cupons' },
