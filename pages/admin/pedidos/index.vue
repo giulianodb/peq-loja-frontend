@@ -11,6 +11,45 @@
       </NuxtLink>
     </div>
 
+    <!-- Pesquisa -->
+    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-4 flex flex-wrap gap-3 items-end">
+      <div class="flex-1 min-w-[180px]">
+        <label class="block text-xs font-medium text-gray-500 mb-1">ID ou nome do cliente</label>
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Ex: 123 ou João Silva"
+          class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal/30"
+          @input="onSearchInput"
+        />
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">Data início</label>
+        <input
+          v-model="dateFrom"
+          type="date"
+          class="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal/30"
+          @change="loadPage(0)"
+        />
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">Data fim</label>
+        <input
+          v-model="dateTo"
+          type="date"
+          class="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal/30"
+          @change="loadPage(0)"
+        />
+      </div>
+      <button
+        v-if="searchQuery || dateFrom || dateTo"
+        @click="clearSearch"
+        class="text-sm text-gray-400 hover:text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="pi pi-times text-xs mr-1" />Limpar
+      </button>
+    </div>
+
     <!-- Filtro por status -->
     <div class="flex gap-2 flex-wrap mb-4">
       <button
@@ -124,6 +163,12 @@ const currentPage = ref(0)
 const totalPages = ref(0)
 const resending = ref<number | null>(null)
 
+const searchQuery = ref('')
+const dateFrom = ref('')
+const dateTo = ref('')
+
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
 const tabs = [
   { value: '', label: 'Todos' },
   { value: 'ABANDONED', label: 'Abandonados' },
@@ -145,19 +190,51 @@ const statuses = [
   { value: 'REFUNDED', label: 'Reembolsado' },
 ]
 
+function onSearchInput() {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => loadPage(0), 400)
+}
+
+function clearSearch() {
+  searchQuery.value = ''
+  dateFrom.value = ''
+  dateTo.value = ''
+  loadPage(0)
+}
+
 function setTab(status: string) {
   activeTab.value = status
   router.replace({ query: status ? { status } : {} })
   loadPage(0)
 }
 
+function buildParams(page: number) {
+  const params = new URLSearchParams()
+  params.set('page', String(page))
+  params.set('size', '20')
+  params.set('sort', 'createdAt,desc')
+
+  if (activeTab.value) params.set('status', activeTab.value)
+
+  const q = searchQuery.value.trim()
+  if (q) {
+    if (/^\d+$/.test(q)) {
+      params.set('id', q)
+    } else {
+      params.set('customerName', q)
+    }
+  }
+
+  if (dateFrom.value) params.set('dateFrom', `${dateFrom.value}T00:00:00`)
+  if (dateTo.value) params.set('dateTo', `${dateTo.value}T23:59:59`)
+
+  return params.toString()
+}
+
 async function loadPage(page: number) {
   loading.value = true
   try {
-    const statusParam = activeTab.value ? `&status=${activeTab.value}` : ''
-    const data = await $fetch<Page<Order>>(
-      `/api/admin/orders?page=${page}&size=20&sort=createdAt,desc${statusParam}`
-    )
+    const data = await $fetch<Page<Order>>(`/api/admin/orders?${buildParams(page)}`)
     orders.value = data.content
     totalPages.value = data.totalPages
     currentPage.value = data.number
