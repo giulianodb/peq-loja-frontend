@@ -763,6 +763,7 @@ async function submitCardPayment() {
     transaction_amount: orderTotal.value,
     couponCode: appliedCoupon.value?.code || null,
     recoveryToken: recoveryToken.value || null,
+    funnelSlug: route.params.slug as string,
     fbclid: getFbclid(),
     fbp: getFbp(),
   }
@@ -787,6 +788,7 @@ async function submitPixPayment() {
     transaction_amount: orderTotal.value,
     couponCode: appliedCoupon.value?.code || null,
     recoveryToken: recoveryToken.value || null,
+    funnelSlug: route.params.slug as string,
     fbclid: getFbclid(),
     fbp: getFbp(),
   }
