@@ -52,6 +52,10 @@
                 <dt class="text-gray-500">Email</dt>
                 <dd class="font-medium text-gray-900 break-all">{{ order.guestEmail }}</dd>
               </div>
+              <div v-if="order.guestPhone">
+                <dt class="text-gray-500">Telefone</dt>
+                <dd class="font-medium text-gray-900">{{ order.guestPhone }}</dd>
+              </div>
               <div v-if="order.guestCpf">
                 <dt class="text-gray-500">CPF</dt>
                 <dd class="font-medium text-gray-900">{{ order.guestCpf }}</dd>
@@ -108,8 +112,12 @@
             <h3 class="text-sm font-semibold text-orange-700 uppercase tracking-wide mb-3">Recuperação</h3>
             <dl class="space-y-3 text-sm mb-4">
               <div>
-                <dt class="text-orange-600">Email enviado</dt>
+                <dt class="text-orange-600">1º email enviado</dt>
                 <dd class="font-medium text-gray-900">{{ order.recoveryEmailSent ? 'Sim' : 'Não' }}</dd>
+              </div>
+              <div>
+                <dt class="text-orange-600">2º email (com cupom)</dt>
+                <dd class="font-medium text-gray-900">{{ order.secondRecoveryEmailSent ? 'Sim' : 'Não' }}</dd>
               </div>
               <div v-if="order.funnelSlug">
                 <dt class="text-orange-600">Funil</dt>

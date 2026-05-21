@@ -75,6 +75,7 @@ const menuItems = [
   { to: '/admin/avaliacoes', icon: 'pi pi-star', label: 'Avaliações' },
   { to: '/admin/webhook-logs', icon: 'pi pi-history', label: 'Webhooks' },
   { to: '/admin/configuracoes', icon: 'pi pi-cog', label: 'Configurações' },
+  { to: '/admin/usuarios', icon: 'pi pi-user-edit', label: 'Usuários Admin' },
 ]
 
 function isActive(path: string) {

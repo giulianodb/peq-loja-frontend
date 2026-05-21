@@ -46,7 +46,16 @@ export interface Product {
   materials: ProductMaterialItem[]
   averageRating: number | null
   totalReviews: number | null
+  moduleSlug: string | null
   createdAt: string
+}
+
+export interface FlashCard {
+  id: number
+  front: string
+  back: string
+  hint: string | null
+  sortOrder: number
 }
 
 export interface CartItem {
@@ -71,10 +80,12 @@ export interface Order {
   recoveryToken: string | null
   funnelSlug: string | null
   recoveryEmailSent: boolean | null
+  secondRecoveryEmailSent: boolean | null
   items: OrderItem[]
   createdAt: string
   checkoutUrl: string | null
   paymentMethod: string | null
+  guestPhone: string | null
   guestCpf: string | null
   couponCode: string | null
   discountAmount: number | null

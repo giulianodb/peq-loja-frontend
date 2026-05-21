@@ -85,6 +85,20 @@
         <label for="active" class="text-sm font-medium text-gray-700">Produto ativo</label>
       </div>
 
+      <!-- Module Slug (app mobile) -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Slug do módulo <span class="text-gray-400 font-normal">(app mobile)</span>
+        </label>
+        <input
+          v-model="form.moduleSlug"
+          type="text"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal/30 focus:border-teal outline-none font-mono"
+          placeholder="ex: flashcards_tabuada"
+        />
+        <p class="mt-1 text-xs text-gray-400">Vincula este produto a um módulo do app. Deixe em branco se não tiver módulo.</p>
+      </div>
+
       <!-- Cover image upload -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Imagem de capa</label>
@@ -310,6 +324,7 @@ const form = reactive({
   stock: props.product?.stock ?? 0,
   categoryId: props.product?.categoryId || null as number | null,
   active: props.product?.active ?? true,
+  moduleSlug: props.product?.moduleSlug || null as string | null,
 })
 
 const imageFile = ref<File | null>(null)
@@ -483,6 +498,7 @@ function handleSubmit() {
     stock: form.stock,
     categoryId: form.categoryId,
     active: form.active,
+    moduleSlug: form.moduleSlug || null,
     videoUrls: videoUrls.value.filter(u => u.trim() !== ''),
   }
 
