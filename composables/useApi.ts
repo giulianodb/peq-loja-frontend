@@ -2,6 +2,7 @@ export function useApi() {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
   const router = useRouter()
+  const route = useRoute()
 
   async function $fetch<T>(path: string, options: any = {}): Promise<T> {
     const headers: Record<string, string> = {
@@ -23,9 +24,10 @@ export function useApi() {
       })
       return response
     } catch (err: any) {
-      if (err?.response?.status === 401 || err?.status === 401) {
+      const status = err?.response?.status ?? err?.status
+      if (status === 401 || status === 403) {
         authStore.logout()
-        await router.push('/login')
+        await router.push(`/login?redirect=${encodeURIComponent(route.fullPath)}`)
       }
       throw err
     }

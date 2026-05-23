@@ -1,7 +1,7 @@
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to) => {
   const auth = useAuthStore()
   if (!auth.isLoggedIn) {
-    return navigateTo('/login?redirect=/admin')
+    return navigateTo(`/login?redirect=${encodeURIComponent(to.fullPath)}`)
   }
   if (!auth.isAdmin) {
     return navigateTo('/')
