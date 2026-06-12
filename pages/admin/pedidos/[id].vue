@@ -146,6 +146,49 @@
           </div>
         </div>
       </div>
+      <!-- Materiais e downloads -->
+      <div class="mt-6 bg-white rounded-xl border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-1">Materiais e downloads</h2>
+        <p class="text-sm text-gray-500 mb-4">Arquivos dos produtos deste pedido e quantas vezes o cliente baixou cada um.</p>
+
+        <div v-if="materialsLoading" class="py-8 text-center text-gray-400">
+          <i class="pi pi-spin pi-spinner text-xl" />
+        </div>
+        <div v-else-if="!materials.length" class="py-6 text-center text-gray-400 text-sm">
+          Nenhum material vinculado aos produtos deste pedido.
+        </div>
+        <div v-else class="space-y-5">
+          <div v-for="prod in materials" :key="prod.productId">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="pi pi-box text-gray-400 text-sm" />
+              <h3 class="font-medium text-gray-800">{{ prod.productName }}</h3>
+            </div>
+            <p v-if="!prod.downloadsTracked" class="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mb-2">
+              Pedido de convidado — downloads não são contabilizados (exigem cliente logado).
+            </p>
+            <p v-if="!prod.materials.length" class="text-sm text-gray-400">Sem arquivos cadastrados.</p>
+            <div v-else class="divide-y divide-gray-100 border border-gray-100 rounded-lg">
+              <div v-for="mat in prod.materials" :key="mat.materialId" class="flex items-center gap-3 px-3 py-2.5">
+                <i :class="fileIcon(mat.fileName)" class="text-gray-400" />
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm text-gray-800 truncate">{{ mat.displayName }}</p>
+                  <p class="text-xs text-gray-400">
+                    {{ formatFileSize(mat.fileSize) }}
+                    <span v-if="mat.lastDownloadedAt"> · último em {{ formatDate(mat.lastDownloadedAt) }}</span>
+                  </p>
+                </div>
+                <span
+                  class="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
+                  :class="mat.downloadCount > 0 ? 'bg-teal/10 text-teal' : 'bg-gray-100 text-gray-400'"
+                >
+                  <i class="pi pi-download text-[10px]" />
+                  {{ mat.downloadCount }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </template>
 
     <!-- Modal de Reembolso -->
@@ -219,7 +262,24 @@ definePageMeta({ layout: 'admin', middleware: 'admin' })
 const route = useRoute()
 const { $fetch } = useApi()
 
+interface MaterialDownloadInfo {
+  materialId: number
+  displayName: string
+  fileName: string | null
+  fileSize: number | null
+  downloadCount: number
+  lastDownloadedAt: string | null
+}
+interface OrderMaterialsGroup {
+  productId: number
+  productName: string
+  downloadsTracked: boolean
+  materials: MaterialDownloadInfo[]
+}
+
 const order = ref<Order | null>(null)
+const materials = ref<OrderMaterialsGroup[]>([])
+const materialsLoading = ref(true)
 const loading = ref(true)
 const resending = ref(false)
 const showRefundModal = ref(false)
@@ -249,8 +309,17 @@ onMounted(async () => {
     order.value = await $fetch<Order>(`/api/admin/orders/${route.params.id}`)
   } catch {
     navigateTo('/admin/pedidos')
+    return
   } finally {
     loading.value = false
+  }
+
+  try {
+    materials.value = await $fetch<OrderMaterialsGroup[]>(`/api/admin/orders/${route.params.id}/materials`)
+  } catch {
+    materials.value = []
+  } finally {
+    materialsLoading.value = false
   }
 })
 
@@ -327,5 +396,24 @@ function formatDate(iso: string) {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   })
+}
+
+function formatFileSize(bytes: number | null) {
+  if (!bytes) return ''
+  if (bytes < 1024) return bytes + ' B'
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB'
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+}
+
+function fileIcon(fileName: string | null) {
+  if (!fileName) return 'pi pi-file'
+  const ext = fileName.split('.').pop()?.toLowerCase()
+  if (ext === 'pdf') return 'pi pi-file-pdf'
+  if (['doc', 'docx'].includes(ext || '')) return 'pi pi-file-word'
+  if (['xls', 'xlsx'].includes(ext || '')) return 'pi pi-file-excel'
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '')) return 'pi pi-image'
+  if (['zip', 'rar', '7z'].includes(ext || '')) return 'pi pi-box'
+  if (['mp4', 'mov', 'avi'].includes(ext || '')) return 'pi pi-video'
+  return 'pi pi-file'
 }
 </script>
