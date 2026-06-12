@@ -118,32 +118,35 @@
           </div>
 
           <!-- Adicionar produto -->
-          <div class="flex gap-2">
-            <div class="relative flex-1">
-              <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-              <input
-                v-model="productSearch"
-                @input="searchProducts"
-                @focus="showProductResults = true"
-                type="text"
-                class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30"
-                placeholder="Buscar produto para adicionar..."
-              />
-              <div
-                v-if="showProductResults && productResults.length"
-                @click.stop
-                class="absolute z-10 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
-              >
+          <div ref="productPickerRef" class="relative">
+            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <input
+              v-model="productSearch"
+              @input="onProductInput"
+              @focus="onProductFocus"
+              type="text"
+              class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30"
+              placeholder="Buscar produto para adicionar..."
+            />
+            <div
+              v-if="showProductResults && productSearch.length >= 1"
+              class="absolute z-10 top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden max-h-72 overflow-y-auto"
+            >
+              <div v-if="searchingProducts" class="py-6 text-center text-gray-400 text-sm">
+                <i class="pi pi-spin pi-spinner" />
+              </div>
+              <template v-else-if="productResults.length">
                 <button
                   v-for="p in productResults"
                   :key="p.id"
-                  @click.stop="addProduct(p)"
+                  @click="addProduct(p)"
                   class="w-full flex items-center justify-between px-3 py-2.5 hover:bg-gray-50 text-left border-b border-gray-100 last:border-0"
                 >
                   <span class="text-sm text-gray-800">{{ p.name }}</span>
                   <span class="text-xs text-gray-400 ml-2 shrink-0">{{ formatCurrency(p.price) }}</span>
                 </button>
-              </div>
+              </template>
+              <div v-else class="py-6 text-center text-gray-400 text-sm">Nenhum produto encontrado</div>
             </div>
           </div>
           <p v-if="!items.length" class="text-xs text-gray-400 mt-2">Nenhum produto adicionado</p>
@@ -351,14 +354,27 @@ const items = ref<OrderItemDraft[]>([])
 const productSearch = ref('')
 const productResults = ref<Product[]>([])
 const showProductResults = ref(false)
+const searchingProducts = ref(false)
+const productPickerRef = ref<HTMLElement | null>(null)
 let productSearchTimeout: ReturnType<typeof setTimeout> | null = null
+
+function onProductFocus() {
+  if (productSearch.value.length >= 1) showProductResults.value = true
+}
+
+function onProductInput() {
+  showProductResults.value = true
+  searchProducts()
+}
 
 function searchProducts() {
   if (productSearchTimeout) clearTimeout(productSearchTimeout)
   if (productSearch.value.length < 1) {
     productResults.value = []
+    searchingProducts.value = false
     return
   }
+  searchingProducts.value = true
   productSearchTimeout = setTimeout(async () => {
     try {
       const data = await $fetch<Page<Product>>(
@@ -367,6 +383,8 @@ function searchProducts() {
       productResults.value = data.content
     } catch {
       productResults.value = []
+    } finally {
+      searchingProducts.value = false
     }
   }, 300)
 }
@@ -393,10 +411,15 @@ function removeItem(idx: number) {
   items.value.splice(idx, 1)
 }
 
-// Fecha dropdown ao clicar fora
-onMounted(() => {
-  document.addEventListener('click', () => { showProductResults.value = false })
-})
+// Fecha o dropdown apenas quando o clique acontece fora do seletor de produtos
+function handleClickOutside(e: MouseEvent) {
+  if (productPickerRef.value && !productPickerRef.value.contains(e.target as Node)) {
+    showProductResults.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 
 // ─── Order ───────────────────────────────────────────────────────────────────
 
