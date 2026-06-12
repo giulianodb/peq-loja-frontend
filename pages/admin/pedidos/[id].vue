@@ -82,6 +82,29 @@
             </dl>
           </div>
 
+          <!-- Acesso do cliente -->
+          <div v-if="order.customerName" class="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Acesso do cliente</h3>
+            <div v-if="accessLoading" class="py-1 text-gray-400 text-sm">
+              <i class="pi pi-spin pi-spinner" />
+            </div>
+            <dl v-else-if="customerAccess && customerAccess.tracked" class="space-y-3 text-sm">
+              <div>
+                <dt class="text-gray-500">Último login</dt>
+                <dd class="font-medium text-gray-900">{{ customerAccess.lastLoginAt ? formatDate(customerAccess.lastLoginAt) : '—' }}</dd>
+              </div>
+              <div>
+                <dt class="text-gray-500">IP do último login</dt>
+                <dd class="font-medium text-gray-900 break-all">{{ customerAccess.lastLoginIp || '—' }}</dd>
+              </div>
+              <div>
+                <dt class="text-gray-500">Autenticações</dt>
+                <dd class="font-medium text-gray-900">{{ customerAccess.loginCount }}</dd>
+              </div>
+            </dl>
+            <p v-else class="text-sm text-gray-400">Sem registros de login.</p>
+          </div>
+
           <!-- Status -->
           <div class="bg-white rounded-xl border border-gray-200 p-6">
             <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Status</h3>
@@ -277,9 +300,18 @@ interface OrderMaterialsGroup {
   materials: MaterialDownloadInfo[]
 }
 
+interface CustomerAccess {
+  tracked: boolean
+  lastLoginAt: string | null
+  lastLoginIp: string | null
+  loginCount: number
+}
+
 const order = ref<Order | null>(null)
 const materials = ref<OrderMaterialsGroup[]>([])
 const materialsLoading = ref(true)
+const customerAccess = ref<CustomerAccess | null>(null)
+const accessLoading = ref(true)
 const loading = ref(true)
 const resending = ref(false)
 const showRefundModal = ref(false)
@@ -320,6 +352,14 @@ onMounted(async () => {
     materials.value = []
   } finally {
     materialsLoading.value = false
+  }
+
+  try {
+    customerAccess.value = await $fetch<CustomerAccess>(`/api/admin/orders/${route.params.id}/customer-access`)
+  } catch {
+    customerAccess.value = null
+  } finally {
+    accessLoading.value = false
   }
 })
 
