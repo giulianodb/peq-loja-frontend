@@ -10,6 +10,7 @@
       </NuxtLink>
       <span class="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">Admin</span>
       <div class="ml-auto flex items-center gap-4">
+        <AdminPresenceBadge />
         <NuxtLink to="/" class="text-white/80 hover:text-white text-sm flex items-center gap-1">
           <i class="pi pi-external-link text-xs" />
           Ver loja
