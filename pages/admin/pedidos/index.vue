@@ -133,15 +133,35 @@
         </div>
       </div>
 
-      <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-4">
+      <div v-if="totalPages > 1" class="flex items-center justify-center gap-1.5 mt-4">
         <button
-          v-for="p in totalPages"
-          :key="p"
-          @click="loadPage(p - 1)"
-          class="w-9 h-9 rounded-lg text-sm font-medium transition-colors"
-          :class="currentPage === p - 1 ? 'bg-teal text-white' : 'text-gray-600 hover:bg-gray-100'"
+          @click="loadPage(currentPage - 1)"
+          :disabled="currentPage === 0"
+          class="w-9 h-9 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed flex items-center justify-center"
+          aria-label="Página anterior"
         >
-          {{ p }}
+          <i class="pi pi-chevron-left text-xs" />
+        </button>
+
+        <template v-for="(item, idx) in pageItems" :key="idx">
+          <span v-if="item === '...'" class="w-9 h-9 flex items-center justify-center text-gray-400 text-sm select-none">…</span>
+          <button
+            v-else
+            @click="loadPage(item - 1)"
+            class="w-9 h-9 rounded-lg text-sm font-medium transition-colors"
+            :class="currentPage === item - 1 ? 'bg-teal text-white' : 'text-gray-600 hover:bg-gray-100'"
+          >
+            {{ item }}
+          </button>
+        </template>
+
+        <button
+          @click="loadPage(currentPage + 1)"
+          :disabled="currentPage >= totalPages - 1"
+          class="w-9 h-9 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed flex items-center justify-center"
+          aria-label="Próxima página"
+        >
+          <i class="pi pi-chevron-right text-xs" />
         </button>
       </div>
     </div>
@@ -179,6 +199,23 @@ const tabs = [
 ]
 
 const activeTab = ref((route.query.status as string) || '')
+
+// Janela de páginas com reticências: 1 … 4 5 [6] 7 8 … 20
+const pageItems = computed<(number | '...')[]>(() => {
+  const total = totalPages.value
+  const current = currentPage.value + 1 // 1-based
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  const items: (number | '...')[] = [1]
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  if (start > 2) items.push('...')
+  for (let p = start; p <= end; p++) items.push(p)
+  if (end < total - 1) items.push('...')
+  items.push(total)
+  return items
+})
 
 const statuses = [
   { value: 'ABANDONED', label: 'Abandonado' },
