@@ -78,6 +78,9 @@
       <button @click="paymentResult = null" class="btn-primary">Tentar novamente</button>
     </div>
 
+    <!-- Checkout em manutenção -->
+    <CheckoutMaintenanceNotice v-else-if="maintenance" :message="maintenanceMessage" />
+
     <!-- Formulario de checkout do funil -->
     <div v-else>
       <!-- Headline -->
@@ -408,6 +411,7 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const auth = useAuthStore()
 const { $fetch: apiFetch } = useApi()
+const { maintenance, maintenanceMessage } = useCheckoutStatus()
 
 const funnel = ref<FunnelData | null>(null)
 const loadingFunnel = ref(true)
@@ -711,6 +715,13 @@ async function submitPayment() {
       await submitPixPayment()
     }
   } catch (e: any) {
+    // Manutenção ativada enquanto o cliente preenchia o formulário
+    if (e?.data?.maintenance) {
+      maintenance.value = true
+      maintenanceMessage.value = e.data.error || ''
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     error.value = e?.data?.message || e?.data?.error || e?.message || 'Erro ao processar pagamento.'
   } finally {
     submitting.value = false

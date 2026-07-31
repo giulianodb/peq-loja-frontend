@@ -7,6 +7,66 @@
     </div>
 
     <div v-else class="space-y-6">
+      <!-- Manutenção do checkout -->
+      <div
+        class="bg-white rounded-xl border p-6 transition-colors"
+        :class="maintenanceOn ? 'border-amber-300 ring-1 ring-amber-200' : 'border-gray-200'"
+      >
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center"
+              :class="maintenanceOn ? 'bg-amber-100' : 'bg-gray-100'"
+            >
+              <i class="pi pi-wrench text-lg" :class="maintenanceOn ? 'text-amber-600' : 'text-gray-600'" />
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">Manutenção do Checkout</h2>
+              <p class="text-xs text-gray-500">Desliga os pagamentos na loja e nos funis</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            role="switch"
+            :aria-checked="maintenanceOn"
+            @click="toggleMaintenance"
+            :disabled="savingMaintenance"
+            class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50"
+            :class="maintenanceOn ? 'bg-amber-500' : 'bg-gray-300'"
+          >
+            <span
+              class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+              :class="maintenanceOn ? 'translate-x-6' : 'translate-x-1'"
+            />
+          </button>
+        </div>
+
+        <div
+          v-if="maintenanceOn"
+          class="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4 text-sm text-amber-800"
+        >
+          <i class="pi pi-exclamation-triangle mt-0.5" />
+          <span>
+            Os pagamentos estão <strong>bloqueados</strong>. Os clientes veem a mensagem abaixo ao entrar no checkout
+            e nenhum pedido novo é criado. Pedidos manuais pelo admin continuam funcionando.
+          </span>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mensagem exibida ao cliente</label>
+          <textarea
+            v-model="configs.checkout_maintenance_message"
+            rows="3"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
+            placeholder="Nosso sistema de pagamento está em manutenção. Voltaremos em breve!"
+          />
+          <p class="text-xs text-gray-400 mt-1">
+            Salva junto com o botão no fim da página. Deixe em branco para usar a mensagem padrão.
+          </p>
+        </div>
+      </div>
+
       <!-- Site -->
       <div class="bg-white rounded-xl border border-gray-200 p-6">
         <div class="flex items-center gap-3 mb-4">
@@ -191,7 +251,11 @@ const loading = ref(true)
 const saving = ref(false)
 const saved = ref(false)
 
+const savingMaintenance = ref(false)
+
 const configs = reactive({
+  checkout_maintenance: 'false',
+  checkout_maintenance_message: '',
   site_url: '',
   facebook_pixel_id: '',
   facebook_pixel_token: '',
@@ -202,6 +266,8 @@ const configs = reactive({
 })
 
 const descriptions: Record<string, string> = {
+  checkout_maintenance: 'Bloqueia o checkout público para manutenção (true/false)',
+  checkout_maintenance_message: 'Mensagem exibida ao cliente durante a manutenção do checkout',
   site_url: 'URL pública do site',
   facebook_pixel_id: 'Facebook Pixel ID',
   facebook_pixel_token: 'Facebook Conversions API Token',
@@ -225,6 +291,28 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+const maintenanceOn = computed(() => configs.checkout_maintenance === 'true')
+
+/** O botão de manutenção salva na hora — não espera o "Salvar Configurações". */
+async function toggleMaintenance() {
+  const next = maintenanceOn.value ? 'false' : 'true'
+  savingMaintenance.value = true
+  try {
+    await $fetch('/api/admin/configurations/checkout_maintenance', {
+      method: 'PUT',
+      body: JSON.stringify({ value: next, description: descriptions.checkout_maintenance }),
+    })
+    configs.checkout_maintenance = next
+    saved.value = true
+    setTimeout(() => { saved.value = false }, 2500)
+  } catch (e) {
+    console.error(e)
+    alert('Erro ao alterar o status do checkout')
+  } finally {
+    savingMaintenance.value = false
+  }
+}
 
 async function saveAll() {
   saving.value = true

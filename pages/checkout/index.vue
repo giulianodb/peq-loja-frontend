@@ -78,6 +78,9 @@
       <button @click="paymentResult = null" class="btn-primary">Tentar novamente</button>
     </div>
 
+    <!-- Checkout em manutenção -->
+    <CheckoutMaintenanceNotice v-else-if="maintenance" :message="maintenanceMessage" />
+
     <!-- Formulário de checkout -->
     <div v-else>
       <h1 class="font-serif text-2xl text-teal text-center mb-8">Finalizar Compra</h1>
@@ -316,6 +319,7 @@ const config = useRuntimeConfig()
 const auth = useAuthStore()
 const cart = useCartStore()
 const { $fetch: apiFetch } = useApi()
+const { maintenance, maintenanceMessage } = useCheckoutStatus()
 
 const form = reactive({
   name: auth.user?.name || '',
@@ -600,6 +604,13 @@ async function submitPayment() {
       await submitPixPayment()
     }
   } catch (e: any) {
+    // Manutenção ativada enquanto o cliente preenchia o formulário
+    if (e?.data?.maintenance) {
+      maintenance.value = true
+      maintenanceMessage.value = e.data.error || ''
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     error.value = e?.data?.message || e?.data?.error || e?.message || 'Erro ao processar pagamento.'
   } finally {
     submitting.value = false
