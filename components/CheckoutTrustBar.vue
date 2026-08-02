@@ -14,6 +14,6 @@
 const items = [
   { icon: 'pi pi-lock',    label: 'Ambiente criptografado' },
   { icon: 'pi pi-bolt',    label: 'Acesso imediato' },
-  { icon: 'pi pi-shield',  label: 'Pagamento 100% seguro via MercadoPago' },
+  { icon: 'pi pi-shield',  label: 'Pagamento 100% seguro via Stripe' },
 ]
 </script>

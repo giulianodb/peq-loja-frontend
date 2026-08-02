@@ -120,7 +120,7 @@
           <!-- Reembolso -->
           <div v-if="order.status === 'CONFIRMED'" class="bg-white rounded-xl border border-gray-200 p-6">
             <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Reembolso</h3>
-            <p class="text-xs text-gray-500 mb-3">Devolve o valor ao cliente via MercadoPago. Pode ser total ou parcial.</p>
+            <p class="text-xs text-gray-500 mb-3">Devolve o valor ao cliente via Stripe. Pode ser total ou parcial. Pedidos antigos, pagos pelo MercadoPago, não podem ser reembolsados por aqui.</p>
             <button
               @click="showRefundModal = true"
               class="w-full py-2 px-4 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2"

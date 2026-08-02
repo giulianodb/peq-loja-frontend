@@ -10,8 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@mercadopago/sdk-js": "^0.0.3",
     "@pinia/nuxt": "^0.5.5",
+    "@stripe/stripe-js": "^9.12.1",
     "nuxt": "^3.14.0",
     "pinia": "^2.2.0"
   },

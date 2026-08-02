@@ -14,8 +14,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'http://192.168.2.16:8080',
-      mercadoPagoPublicKey: 'APP_USR-beba92f0-4530-4f47-bdc9-55b6c0f6ec2b',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://192.168.2.16:8080',
+      stripePublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
     },
   },
 
@@ -51,8 +51,7 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
         { rel: 'preload', as: 'image', href: '/images/logo-coral.webp', type: 'image/webp' },
         { rel: 'preload', as: 'font', href: '/primeicons/fonts/primeicons.woff2', type: 'font/woff2', crossorigin: '' },
-        { rel: 'preconnect', href: 'https://sdk.mercadopago.com' },
-        { rel: 'preconnect', href: 'https://secure.mlstatic.com' },
+        { rel: 'preconnect', href: 'https://js.stripe.com' },
       ],
     },
   },

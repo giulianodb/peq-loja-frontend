@@ -55,7 +55,7 @@
               <i class="pi pi-shield text-2xl text-coral" />
             </div>
             <h3 class="font-serif text-lg text-teal">Compra Segura</h3>
-            <p class="text-sm text-steel mt-1">Pagamento seguro via Mercado Pago</p>
+            <p class="text-sm text-steel mt-1">Pagamento seguro via Pix ou cartão</p>
           </div>
         </div>
       </div>
