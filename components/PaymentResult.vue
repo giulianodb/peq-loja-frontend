@@ -38,6 +38,21 @@
         />
       </div>
 
+      <!--
+        A cobrança é internacional e quem recebe os reais no Brasil é o Ebanx,
+        parceiro do nosso processador. O app do banco mostra "Ebanx LTDA." no
+        lugar do nome da loja, e não há como mudar isso: o campo é do recebedor
+        legal. Avisar antes do escaneamento evita a hesitação de quem vê um
+        nome que não reconhece na hora de confirmar o pagamento.
+      -->
+      <div class="flex items-start gap-2 text-left text-xs text-steel bg-sand-100 rounded-xl px-3 py-2.5 mb-4">
+        <i class="pi pi-info-circle mt-0.5 shrink-0 text-teal" />
+        <span>
+          No seu banco o recebedor aparece como <strong class="text-teal">Ebanx LTDA.</strong>,
+          nosso processador de pagamentos. Pode confirmar — o pedido é da Pequenas Trilhas.
+        </span>
+      </div>
+
       <p v-if="countdown" class="text-xs text-steel mb-4">
         Este código expira em <span class="font-semibold text-teal">{{ countdown }}</span>
       </p>
