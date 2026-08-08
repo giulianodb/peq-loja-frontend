@@ -199,7 +199,7 @@
 
         <!-- Bloco 2: Pagamento + Botão -->
         <div class="lg:col-span-3 space-y-6">
-          <PaymentBox :payment="payment" :coupon="coupon" card-tab-label="Cartão" />
+          <PaymentBox :payment="payment" :coupon="coupon" card-tab-label="Cartão" :card-enabled="cardEnabled" />
 
           <button
             @click="payment.submitPayment()"
@@ -259,7 +259,7 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const auth = useAuthStore()
 const { $fetch: apiFetch } = useApi()
-const { maintenance, maintenanceMessage } = useCheckoutStatus()
+const { maintenance, maintenanceMessage, cardEnabled } = useCheckoutStatus()
 
 const funnel = ref<FunnelData | null>(null)
 const loadingFunnel = ref(true)

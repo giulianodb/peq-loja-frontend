@@ -15,11 +15,18 @@
         Pix
       </button>
       <button
-        @click="paymentMethod = 'credit_card'"
-        :class="['flex-1 py-3 px-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors', paymentMethod === 'credit_card' ? 'bg-teal text-white' : 'bg-white text-primary-700 hover:bg-sand-100']"
+        @click="cardEnabled && (paymentMethod = 'credit_card')"
+        :disabled="!cardEnabled"
+        :title="cardEnabled ? undefined : 'Em breve. Por enquanto, pague com Pix.'"
+        :class="['flex-1 py-3 px-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors',
+                 !cardEnabled ? 'bg-sand-100 text-steel/60 cursor-not-allowed'
+                 : paymentMethod === 'credit_card' ? 'bg-teal text-white' : 'bg-white text-primary-700 hover:bg-sand-100']"
       >
         <i class="pi pi-credit-card" />
         {{ cardTabLabel }}
+        <span v-if="!cardEnabled" class="text-[10px] uppercase tracking-wide bg-white/70 text-steel rounded-full px-1.5 py-0.5">
+          em breve
+        </span>
       </button>
     </div>
 
@@ -102,8 +109,9 @@ const props = withDefaults(
     payment: ReturnType<typeof usePayment>
     coupon: ReturnType<typeof useCoupon>
     cardTabLabel?: string
+    cardEnabled?: boolean
   }>(),
-  { cardTabLabel: 'Cartão de crédito' },
+  { cardTabLabel: 'Cartão de crédito', cardEnabled: true },
 )
 
 const { paymentMethod } = props.payment

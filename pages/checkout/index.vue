@@ -112,7 +112,7 @@
 
         <!-- Bloco 2: Pagamento + Botão -->
         <div class="lg:col-span-3 space-y-6">
-          <PaymentBox :payment="payment" :coupon="coupon" />
+          <PaymentBox :payment="payment" :coupon="coupon" :card-enabled="cardEnabled" />
 
           <button
             @click="payment.submitPayment()"
@@ -142,7 +142,7 @@ definePageMeta({ layout: 'checkout' })
 const auth = useAuthStore()
 const cart = useCartStore()
 const { $fetch: apiFetch } = useApi()
-const { maintenance, maintenanceMessage } = useCheckoutStatus()
+const { maintenance, maintenanceMessage, cardEnabled } = useCheckoutStatus()
 
 const form = reactive({
   name: auth.user?.name || '',
