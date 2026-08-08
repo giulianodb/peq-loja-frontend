@@ -37,7 +37,6 @@ export interface Product {
   shortDescription: string | null
   description: string
   price: number
-  stock: number
   imageUrl: string | null
   active: boolean
   categoryId: number | null

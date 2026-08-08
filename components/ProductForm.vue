@@ -49,17 +49,6 @@
             placeholder="0,00"
           />
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estoque *</label>
-          <input
-            v-model.number="form.stock"
-            type="number"
-            min="0"
-            required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal/30 focus:border-teal outline-none"
-            placeholder="0"
-          />
-        </div>
       </div>
 
       <!-- Category -->
@@ -321,7 +310,6 @@ const form = reactive({
   shortDescription: props.product?.shortDescription || '',
   description: props.product?.description || '',
   price: props.product?.price || 0,
-  stock: props.product?.stock ?? 0,
   categoryId: props.product?.categoryId || null as number | null,
   active: props.product?.active ?? true,
   moduleSlug: props.product?.moduleSlug || null as string | null,
@@ -495,7 +483,6 @@ function handleSubmit() {
     shortDescription: form.shortDescription || null,
     description: form.description || null,
     price: form.price,
-    stock: form.stock,
     categoryId: form.categoryId,
     active: form.active,
     moduleSlug: form.moduleSlug || null,

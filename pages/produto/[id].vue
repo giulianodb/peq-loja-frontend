@@ -99,11 +99,10 @@
           <button
             ref="mainAddBtn"
             @click="addToCart"
-            :disabled="product.stock <= 0"
-            class="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn-primary w-full sm:w-auto"
           >
             <i class="pi pi-shopping-bag mr-2" />
-            {{ product.stock > 0 ? 'Adicionar ao Carrinho' : 'Esgotado' }}
+            Adicionar ao Carrinho
           </button>
           <div v-if="added" class="mt-4 flex items-center gap-2 text-coral text-sm">
             <i class="pi pi-check-circle" />
@@ -120,11 +119,10 @@
         <div class="mt-8">
           <button
             @click="addToCart"
-            :disabled="product.stock <= 0"
-            class="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn-primary w-full sm:w-auto"
           >
             <i class="pi pi-shopping-bag mr-2" />
-            {{ product.stock > 0 ? 'Adicionar ao Carrinho' : 'Esgotado' }}
+            Adicionar ao Carrinho
           </button>
         </div>
 
@@ -159,7 +157,7 @@
     <!-- Floating: desktop card (right side) -->
     <Transition name="float-right">
       <div
-        v-if="showFloating && product && product.stock > 0"
+        v-if="showFloating && product"
         class="hidden md:flex fixed right-6 bottom-8 z-40 flex-col w-64 bg-white rounded-2xl shadow-2xl border border-sand-200 overflow-hidden"
       >
         <div class="flex items-center gap-3 p-4 border-b border-sand-100">
@@ -204,7 +202,7 @@
     <!-- Floating: mobile bottom bar -->
     <Transition name="float-up">
       <div
-        v-if="showFloating && product && product.stock > 0"
+        v-if="showFloating && product"
         class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-sand-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3"
       >
         <div class="flex-1 min-w-0">
@@ -439,7 +437,7 @@ function formatPrice(value: number) {
 }
 
 function addToCart() {
-  if (!product.value || product.value.stock <= 0) return
+  if (!product.value) return
   cart.add(product.value, 1)
   added.value = true
   setTimeout(() => (added.value = false), 3000)

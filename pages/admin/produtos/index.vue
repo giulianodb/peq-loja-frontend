@@ -25,7 +25,6 @@
                 <th class="text-left px-4 py-3 font-medium text-gray-500">Produto</th>
                 <th class="text-left px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Categoria</th>
                 <th class="text-right px-4 py-3 font-medium text-gray-500">Preço</th>
-                <th class="text-right px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Estoque</th>
                 <th class="text-center px-4 py-3 font-medium text-gray-500">Status</th>
                 <th class="text-right px-4 py-3 font-medium text-gray-500">Ações</th>
               </tr>
@@ -48,9 +47,6 @@
                 </td>
                 <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">{{ p.categoryName || '—' }}</td>
                 <td class="px-4 py-3 text-right text-gray-900">{{ formatCurrency(p.price) }}</td>
-                <td class="px-4 py-3 text-right hidden sm:table-cell" :class="p.stock <= 0 ? 'text-red-500 font-medium' : 'text-gray-600'">
-                  {{ p.stock }}
-                </td>
                 <td class="px-4 py-3 text-center">
                   <span
                     class="inline-block px-2 py-0.5 rounded-full text-xs font-medium"
@@ -79,7 +75,7 @@
                 </td>
               </tr>
               <tr v-if="products.length === 0">
-                <td colspan="6" class="px-4 py-12 text-center text-gray-400">
+                <td colspan="5" class="px-4 py-12 text-center text-gray-400">
                   Nenhum produto cadastrado
                 </td>
               </tr>

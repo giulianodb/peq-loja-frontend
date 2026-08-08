@@ -18,14 +18,6 @@
       >
         <i class="pi pi-file-pdf text-5xl text-salmon" />
       </div>
-      <div
-        v-if="product.stock <= 0"
-        class="absolute inset-0 bg-black/40 flex items-center justify-center"
-      >
-        <span class="bg-white text-teal px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
-          Esgotado
-        </span>
-      </div>
     </div>
     <div class="p-3 sm:p-4">
       <span
