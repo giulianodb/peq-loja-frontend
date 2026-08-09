@@ -40,16 +40,24 @@
 
       <!--
         A cobrança é internacional e quem recebe os reais no Brasil é o Ebanx,
-        parceiro do nosso processador. O app do banco mostra "Ebanx LTDA." no
-        lugar do nome da loja, e não há como mudar isso: o campo é do recebedor
-        legal. Avisar antes do escaneamento evita a hesitação de quem vê um
-        nome que não reconhece na hora de confirmar o pagamento.
+        instituição de pagamento licenciada. Verificado no app dos bancos: só
+        "EBANX" e "EBANX IP LTDA." são exibidos — o nome da loja não aparece em
+        lugar nenhum da tela de confirmação.
+        Não é configuração faltando. O campo 59 do QR precisa ser o do recebedor
+        legal, e o `solicitacaoPagador` (que traz "Éditions Pequenas Trilhas")
+        os bancos simplesmente não renderizam. Não há parâmetro na API do Stripe
+        que mude isso — SDK conferido campo a campo.
+        Este aviso é a única mitigação possível: o cliente precisa saber o nome
+        ANTES de escanear, senão hesita na hora de confirmar.
+        Os nomes abaixo são os que aparecem de fato na tela; se mudarem, o aviso
+        perde a função e vira mais uma dúvida.
       -->
       <div class="flex items-start gap-2 text-left text-xs text-steel bg-sand-100 rounded-xl px-3 py-2.5 mb-4">
         <i class="pi pi-info-circle mt-0.5 shrink-0 text-teal" />
         <span>
-          No seu banco o recebedor aparece como <strong class="text-teal">Ebanx LTDA.</strong>,
-          nosso processador de pagamentos. Pode confirmar — o pedido é da Pequenas Trilhas.
+          No app do seu banco o recebedor aparece como <strong class="text-teal">EBANX</strong>
+          ou <strong class="text-teal">EBANX IP LTDA.</strong> — é a instituição que processa
+          os pagamentos da Pequenas Trilhas. Pode confirmar com tranquilidade.
         </span>
       </div>
 
