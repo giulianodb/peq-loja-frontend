@@ -3,11 +3,7 @@
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
 
-  let visitorId = localStorage.getItem('visitor_id')
-  if (!visitorId) {
-    visitorId = (crypto.randomUUID?.() ?? `${Math.random().toString(36).slice(2)}${Date.now()}`)
-    localStorage.setItem('visitor_id', visitorId)
-  }
+  const visitorId = useVisitorId()
 
   const PING_INTERVAL = 30_000
   let timer: ReturnType<typeof setInterval> | null = null
@@ -16,7 +12,7 @@ export default defineNuxtPlugin(() => {
     if (document.hidden) return
     fetch(`${config.public.apiBase}/api/presence/ping`, {
       method: 'POST',
-      headers: { 'X-Visitor-Id': visitorId! },
+      headers: { 'X-Visitor-Id': visitorId },
       keepalive: true,
     }).catch(() => { /* presença é best-effort */ })
   }

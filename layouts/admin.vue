@@ -70,6 +70,7 @@ const menuItems = [
   { to: '/admin/produtos', icon: 'pi pi-box', label: 'Produtos' },
   { to: '/admin/pedidos', icon: 'pi pi-shopping-bag', label: 'Pedidos' },
   { to: '/admin/downloads', icon: 'pi pi-download', label: 'Downloads' },
+  { to: '/admin/trafego', icon: 'pi pi-chart-line', label: 'Tráfego' },
   { to: '/admin/clientes', icon: 'pi pi-users', label: 'Clientes' },
   { to: '/admin/checkouts', icon: 'pi pi-megaphone', label: 'Checkouts' },
   { to: '/admin/categorias', icon: 'pi pi-tag', label: 'Categorias' },
