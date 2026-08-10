@@ -326,6 +326,7 @@ const statuses = [
   { value: 'SHIPPED', label: 'Enviado' },
   { value: 'DELIVERED', label: 'Entregue' },
   { value: 'CANCELLED', label: 'Cancelado' },
+  { value: 'REFUSED', label: 'Pagamento recusado' },
   { value: 'REFUNDED', label: 'Reembolsado' },
   { value: 'PARTIALLY_REFUNDED', label: 'Reembolso parcial' },
 ]

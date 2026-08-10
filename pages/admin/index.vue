@@ -170,6 +170,9 @@ const statusLabels: Record<string, string> = {
   SHIPPED: 'Enviado',
   DELIVERED: 'Entregue',
   CANCELLED: 'Cancelado',
+  REFUSED: 'Pagamento recusado',
+  REFUNDED: 'Reembolsado',
+  PARTIALLY_REFUNDED: 'Reembolso parcial',
 }
 
 function statusLabel(s: string) {
@@ -184,6 +187,9 @@ function statusColor(s: string) {
     SHIPPED: 'bg-purple-500',
     DELIVERED: 'bg-green-500',
     CANCELLED: 'bg-red-400',
+    REFUSED: 'bg-rose-500',
+    REFUNDED: 'bg-gray-400',
+    PARTIALLY_REFUNDED: 'bg-amber-500',
   }
   return map[s] || 'bg-gray-400'
 }

@@ -224,7 +224,9 @@ const statuses = [
   { value: 'SHIPPED', label: 'Enviado' },
   { value: 'DELIVERED', label: 'Entregue' },
   { value: 'CANCELLED', label: 'Cancelado' },
+  { value: 'REFUSED', label: 'Pagamento recusado' },
   { value: 'REFUNDED', label: 'Reembolsado' },
+  { value: 'PARTIALLY_REFUNDED', label: 'Reembolso parcial' },
 ]
 
 function onSearchInput() {
@@ -327,7 +329,9 @@ function statusClass(status: string) {
     SHIPPED: 'bg-purple-100 text-purple-700',
     DELIVERED: 'bg-green-100 text-green-700',
     CANCELLED: 'bg-red-100 text-red-500',
+    REFUSED: 'bg-rose-100 text-rose-700',
     REFUNDED: 'bg-gray-100 text-gray-600',
+    PARTIALLY_REFUNDED: 'bg-amber-100 text-amber-700',
   }
   return map[status] || 'bg-gray-100 text-gray-600'
 }
