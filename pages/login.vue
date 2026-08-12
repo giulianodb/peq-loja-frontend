@@ -45,6 +45,11 @@
             class="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral transition-all text-sm"
             :placeholder="isLogin ? 'Sua senha' : 'Mínimo 6 caracteres'"
           />
+          <div v-if="isLogin" class="mt-2 text-right">
+            <NuxtLink to="/esqueci-senha" class="text-coral text-sm hover:underline">
+              Esqueci minha senha
+            </NuxtLink>
+          </div>
         </div>
 
         <p v-if="error" class="text-red-500 text-sm flex items-center gap-1">
