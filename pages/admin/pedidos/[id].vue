@@ -64,6 +64,13 @@
                 <dt class="text-gray-500">Data</dt>
                 <dd class="font-medium text-gray-900">{{ formatDate(order.createdAt) }}</dd>
               </div>
+              <div v-if="order.ip || order.country">
+                <dt class="text-gray-500">Origem</dt>
+                <dd class="font-medium text-gray-900">
+                  <span v-if="order.country">{{ order.country }}</span>
+                  <span v-if="order.ip" class="font-mono text-xs text-gray-500 block">{{ order.ip }}</span>
+                </dd>
+              </div>
               <div v-if="order.paymentMethod">
                 <dt class="text-gray-500">Pagamento</dt>
                 <dd class="font-medium text-gray-900">{{ order.paymentMethod }}</dd>

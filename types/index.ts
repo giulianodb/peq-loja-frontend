@@ -88,6 +88,9 @@ export interface Order {
   guestCpf: string | null
   couponCode: string | null
   discountAmount: number | null
+  /** Só vêm preenchidos no detalhe do admin (GET /api/admin/orders/{id}). */
+  ip?: string | null
+  country?: string | null
 }
 
 export interface Page<T> {
