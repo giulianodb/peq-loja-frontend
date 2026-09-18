@@ -17,16 +17,31 @@
           <h2 class="font-semibold text-gray-800 mb-4">Cliente</h2>
 
           <!-- Cliente selecionado -->
-          <div v-if="selectedCustomer" class="flex items-start justify-between gap-3 p-3 bg-teal/5 border border-teal/20 rounded-lg">
-            <div>
-              <p class="font-medium text-gray-800">{{ selectedCustomer.name }}</p>
-              <p class="text-sm text-gray-500">{{ selectedCustomer.email }}</p>
-              <p v-if="selectedCustomer.phone" class="text-sm text-gray-500">{{ selectedCustomer.phone }}</p>
-              <span class="inline-block mt-1 text-xs bg-teal/10 text-teal px-2 py-0.5 rounded-full">Cliente cadastrado</span>
+          <div v-if="selectedCustomer">
+            <div class="flex items-start justify-between gap-3 p-3 bg-teal/5 border border-teal/20 rounded-lg">
+              <div>
+                <p class="font-medium text-gray-800">{{ selectedCustomer.name }}</p>
+                <p class="text-sm text-gray-500">{{ selectedCustomer.email }}</p>
+                <span class="inline-block mt-1 text-xs bg-teal/10 text-teal px-2 py-0.5 rounded-full">Cliente cadastrado</span>
+              </div>
+              <button @click="clearCustomer" class="text-gray-400 hover:text-gray-600 p-1 rounded">
+                <i class="pi pi-times text-sm" />
+              </button>
             </div>
-            <button @click="clearCustomer" class="text-gray-400 hover:text-gray-600 p-1 rounded">
-              <i class="pi pi-times text-sm" />
-            </button>
+
+            <!-- Telefone e CPF ficam editáveis: o cadastro do cliente não guarda
+                 CPF e muitas vezes também não tem telefone. -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                <input v-model="guest.phone" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30" placeholder="(00) 00000-0000" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">CPF <span class="text-red-500">*</span></label>
+                <input v-model="guest.cpf" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30" placeholder="000.000.000-00" />
+              </div>
+            </div>
+            <p class="mt-2 text-xs text-gray-400">Enviados junto com o pedido e no webhook.</p>
           </div>
 
           <!-- Modo manual ativo -->
@@ -45,7 +60,7 @@
                 <input v-model="guest.phone" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30" placeholder="(00) 00000-0000" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">CPF <span class="text-red-500">*</span></label>
                 <input v-model="guest.cpf" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/30" placeholder="000.000.000-00" />
               </div>
             </div>
@@ -284,6 +299,8 @@ interface CustomerResult {
   name: string
   email: string
   phone: string | null
+  /** Último CPF que o cliente informou em algum pedido; o cadastro não guarda CPF. */
+  lastCpf: string | null
 }
 
 const showModal = ref(false)
@@ -329,10 +346,21 @@ function selectCustomer(c: CustomerResult) {
   selectedCustomer.value = c
   showModal.value = false
   manualMode.value = false
+  // Pré-preenche o que der para reaproveitar; ambos seguem editáveis.
+  guest.phone = c.phone || ''
+  guest.cpf = c.lastCpf || ''
 }
 
 function clearCustomer() {
   selectedCustomer.value = null
+  resetGuest()
+}
+
+function resetGuest() {
+  guest.name = ''
+  guest.email = ''
+  guest.phone = ''
+  guest.cpf = ''
 }
 
 function switchToManual() {
@@ -435,7 +463,8 @@ const orderTotal = computed(() =>
 const canSubmit = computed(() => {
   const hasCustomer = selectedCustomer.value !== null ||
     (manualMode.value && guest.name.trim() && guest.email.trim())
-  return hasCustomer && items.value.length > 0
+  // CPF é obrigatório nos dois modos: sem ele o webhook do pedido sai incompleto.
+  return hasCustomer && guest.cpf.trim().length > 0 && items.value.length > 0
 })
 
 async function submit() {
@@ -452,13 +481,14 @@ async function submit() {
       })),
     }
 
+    body.guestPhone = guest.phone || null
+    body.guestCpf = guest.cpf || null
+
     if (selectedCustomer.value) {
       body.customerId = selectedCustomer.value.id
     } else {
       body.guestName = guest.name
       body.guestEmail = guest.email
-      body.guestPhone = guest.phone || null
-      body.guestCpf = guest.cpf || null
     }
 
     const order = await $fetch<{ id: number }>('/api/admin/orders', {
@@ -468,8 +498,8 @@ async function submit() {
 
     router.push(`/admin/pedidos/${order.id}`)
   } catch (e: unknown) {
-    const err = e as { data?: { message?: string } }
-    error.value = err?.data?.message || 'Erro ao criar pedido'
+    const err = e as { data?: { error?: string; message?: string } }
+    error.value = err?.data?.error || err?.data?.message || 'Erro ao criar pedido'
   } finally {
     saving.value = false
   }
