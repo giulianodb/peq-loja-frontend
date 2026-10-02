@@ -5,6 +5,21 @@ declare global {
   }
 }
 
+// Um id por visita ao checkout. O pixel o usa no AddPaymentInfo e o mesmo valor
+// segue no corpo do /api/orders/checkout, para a Meta juntar o evento do
+// navegador com o que o servidor envia pela Conversions API.
+let addPaymentInfoEventId: string | null = null
+
+function getAddPaymentInfoEventId(): string {
+  if (!addPaymentInfoEventId) {
+    addPaymentInfoEventId =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `api-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  }
+  return addPaymentInfoEventId
+}
+
 export function useTracking() {
   function fbq(...args: any[]) {
     if (typeof window !== 'undefined' && window.fbq) {
@@ -75,7 +90,7 @@ export function useTracking() {
       num_items: items.length,
       value: total,
       currency: 'BRL',
-    })
+    }, { eventID: getAddPaymentInfoEventId() })
     gtag('event', 'add_payment_info', {
       items: items.map(i => ({ item_id: String(i.id), item_name: i.name, price: i.price, quantity: i.quantity })),
       currency: 'BRL',
@@ -99,5 +114,8 @@ export function useTracking() {
     })
   }
 
-  return { pageView, viewContent, addToCart, initiateCheckout, addPaymentInfo, purchase }
+  return {
+    pageView, viewContent, addToCart, initiateCheckout, addPaymentInfo, purchase,
+    getAddPaymentInfoEventId,
+  }
 }

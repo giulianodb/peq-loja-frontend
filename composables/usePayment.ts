@@ -174,6 +174,9 @@ export function usePayment(options: UsePaymentOptions) {
 
     if (options.funnelSlug) body.funnelSlug = options.funnelSlug
 
+    // Mesmo eventID do AddPaymentInfo do pixel: o servidor o reenvia pela CAPI.
+    body.addPaymentInfoEventId = useTracking().getAddPaymentInfoEventId()
+
     if (options.withFbAttribution) {
       const { getFbclid, getFbp } = useFbAttribution()
       body.fbclid = getFbclid()
