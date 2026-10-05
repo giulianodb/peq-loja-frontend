@@ -67,6 +67,49 @@
         </div>
       </div>
 
+      <!-- Atividades do aplicativo -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-teal/10 flex items-center justify-center">
+            <i class="pi pi-mobile text-teal text-lg" />
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">Atividades do aplicativo</h2>
+            <p class="text-xs text-gray-500">Liga ou desliga cada atividade para todas as contas</p>
+          </div>
+        </div>
+
+        <ul class="divide-y divide-gray-100">
+          <li v-for="activity in appActivities" :key="activity.key" class="flex items-center justify-between gap-4 py-3">
+            <div>
+              <p class="text-sm font-medium text-gray-900">{{ activity.label }}</p>
+              <p class="text-xs text-gray-500">
+                {{ isActivityOn(activity.key) ? 'No ar' : 'Desligada: aparece como "Em breve" no aplicativo' }}
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              :aria-checked="isActivityOn(activity.key)"
+              :aria-label="activity.label"
+              @click="toggleActivity(activity.key)"
+              :disabled="savingActivity === activity.key"
+              class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50"
+              :class="isActivityOn(activity.key) ? 'bg-teal' : 'bg-gray-300'"
+            >
+              <span
+                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                :class="isActivityOn(activity.key) ? 'translate-x-6' : 'translate-x-1'"
+              />
+            </button>
+          </li>
+        </ul>
+        <p class="text-xs text-gray-400 mt-3">
+          Salva na hora. O aplicativo confere ao ser aberto com internet, então a mudança chega aos aparelhos na
+          próxima abertura.
+        </p>
+      </div>
+
       <!-- Site -->
       <div class="bg-white rounded-xl border border-gray-200 p-6">
         <div class="flex items-center gap-3 mb-4">
@@ -263,6 +306,9 @@ const configs = reactive({
   custom_head_scripts: '',
   webhook_url: '',
   webhook_secret: '',
+  app_activity_flash_cards: 'true',
+  app_activity_batalha: 'true',
+  app_activity_clock_hall: 'false',
 })
 
 const descriptions: Record<string, string> = {
@@ -275,7 +321,19 @@ const descriptions: Record<string, string> = {
   custom_head_scripts: 'Scripts personalizados no head',
   webhook_url: 'URL do webhook de mudança de status do pedido',
   webhook_secret: 'Senha/secret para assinatura HMAC-SHA256 do webhook',
+  app_activity_flash_cards: 'Atividade Flash cards da Tabuada ligada no aplicativo (true/false)',
+  app_activity_batalha: 'Atividade Batalha da Tabuada ligada no aplicativo (true/false)',
+  app_activity_clock_hall: 'Atividade Salão do Relógio ligada no aplicativo (true/false)',
 }
+
+/** As atividades do aplicativo que o admin pode ligar e desligar. */
+const appActivities = [
+  { key: 'app_activity_flash_cards', label: 'Flash cards da Tabuada' },
+  { key: 'app_activity_batalha', label: 'Batalha da Tabuada' },
+  { key: 'app_activity_clock_hall', label: 'Salão do Relógio' },
+] as const
+
+const savingActivity = ref<string | null>(null)
 
 onMounted(async () => {
   try {
@@ -293,6 +351,30 @@ onMounted(async () => {
 })
 
 const maintenanceOn = computed(() => configs.checkout_maintenance === 'true')
+
+function isActivityOn(key: (typeof appActivities)[number]['key']) {
+  return configs[key] === 'true'
+}
+
+/** Como o botão de manutenção: salva na hora, sem esperar o "Salvar Configurações". */
+async function toggleActivity(key: (typeof appActivities)[number]['key']) {
+  const next = isActivityOn(key) ? 'false' : 'true'
+  savingActivity.value = key
+  try {
+    await $fetch(`/api/admin/configurations/${key}`, {
+      method: 'PUT',
+      body: JSON.stringify({ value: next, description: descriptions[key] }),
+    })
+    configs[key] = next
+    saved.value = true
+    setTimeout(() => { saved.value = false }, 2500)
+  } catch (e) {
+    console.error(e)
+    alert('Erro ao alterar a atividade do aplicativo')
+  } finally {
+    savingActivity.value = null
+  }
+}
 
 /** O botão de manutenção salva na hora — não espera o "Salvar Configurações". */
 async function toggleMaintenance() {
