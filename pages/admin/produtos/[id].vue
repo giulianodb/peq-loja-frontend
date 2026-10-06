@@ -62,9 +62,9 @@ async function handleSave(formData: FormData) {
       body: formData,
     })
     navigateTo('/admin/produtos')
-  } catch (e) {
+  } catch (e: any) {
     console.error(e)
-    alert('Erro ao atualizar produto')
+    alert(e?.data?.error || 'Erro ao atualizar produto')
   } finally {
     saving.value = false
   }

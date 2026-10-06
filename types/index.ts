@@ -46,7 +46,14 @@ export interface Product {
   averageRating: number | null
   totalReviews: number | null
   moduleSlug: string | null
+  sku?: string | null
+  appGrants?: string[]
   createdAt: string
+}
+
+export interface AppGrantOption {
+  code: string
+  label: string
 }
 
 export interface FlashCard {

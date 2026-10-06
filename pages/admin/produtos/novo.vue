@@ -25,9 +25,9 @@ async function handleSave(formData: FormData) {
       body: formData,
     })
     navigateTo('/admin/produtos')
-  } catch (e) {
+  } catch (e: any) {
     console.error(e)
-    alert('Erro ao criar produto')
+    alert(e?.data?.error || 'Erro ao criar produto')
   } finally {
     saving.value = false
   }

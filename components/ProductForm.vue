@@ -74,6 +74,48 @@
         <label for="active" class="text-sm font-medium text-gray-700">Produto ativo</label>
       </div>
 
+      <!-- SKU e o que libera no app -->
+      <div class="rounded-xl border border-gray-200 bg-gray-50/60 p-4 space-y-3">
+        <div>
+          <label for="sku" class="block text-sm font-medium text-gray-700 mb-1">
+            SKU do app <span class="text-gray-400 font-normal">(opcional)</span>
+          </label>
+          <input
+            id="sku"
+            v-model="form.sku"
+            type="text"
+            maxlength="80"
+            class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-teal/30 focus:border-teal outline-none font-mono bg-white"
+            :class="skuInvalid ? 'border-red-400' : 'border-gray-300'"
+            placeholder="ex: aventura-tabuada"
+          />
+          <p v-if="skuInvalid" class="mt-1 text-xs text-red-500">
+            Use de 2 a 80 letras, números, ponto, hífen ou sublinhado (sem espaços).
+          </p>
+          <p v-else class="mt-1 text-xs text-gray-400">
+            Quem compra este produto passa a ter, no aplicativo, as atividades marcadas abaixo.
+            Sem SKU, a compra não libera nada no app. Cada SKU pertence a um só produto.
+          </p>
+        </div>
+        <div v-if="form.sku.trim()">
+          <p class="text-sm font-medium text-gray-700 mb-2">O que este produto libera no app</p>
+          <div class="space-y-2">
+            <label v-for="g in appGrantOptions" :key="g.code" class="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                v-model="form.appGrants"
+                type="checkbox"
+                :value="g.code"
+                class="w-4 h-4 rounded border-gray-300 text-teal focus:ring-teal"
+              />
+              {{ g.label }}
+            </label>
+          </div>
+          <p v-if="!form.appGrants.length" class="mt-2 text-xs text-amber-600">
+            Nenhuma atividade marcada: o SKU existe, mas a compra não libera atividade nenhuma.
+          </p>
+        </div>
+      </div>
+
       <!-- Module Slug (app mobile) -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -283,7 +325,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Product, Category, ProductMedia, ProductMaterialItem } from '~/types'
+import type { Product, Category, ProductMedia, ProductMaterialItem, AppGrantOption } from '~/types'
 
 interface GalleryPreview {
   key: string
@@ -313,7 +355,13 @@ const form = reactive({
   categoryId: props.product?.categoryId || null as number | null,
   active: props.product?.active ?? true,
   moduleSlug: props.product?.moduleSlug || null as string | null,
+  sku: props.product?.sku || '',
+  appGrants: [...(props.product?.appGrants || [])] as string[],
 })
+
+const appGrantOptions = ref<AppGrantOption[]>([])
+const SKU_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{1,79}$/
+const skuInvalid = computed(() => form.sku.trim() !== '' && !SKU_PATTERN.test(form.sku.trim()))
 
 const imageFile = ref<File | null>(null)
 const imagePreview = ref<string | null>(null)
@@ -357,6 +405,11 @@ onMounted(async () => {
     categories.value = await $fetch<Category[]>('/api/categories')
   } catch {
     // ignore
+  }
+  try {
+    appGrantOptions.value = await $fetch<AppGrantOption[]>('/api/admin/app/grants')
+  } catch {
+    // sem o catálogo o painel não oferece as caixinhas, mas o resto do cadastro funciona
   }
 })
 
@@ -476,6 +529,10 @@ async function deleteMaterial(materialId: number) {
 }
 
 function handleSubmit() {
+  if (skuInvalid.value) {
+    document.getElementById('sku')?.focus()
+    return
+  }
   const fd = new FormData()
 
   const productData = {
@@ -486,6 +543,8 @@ function handleSubmit() {
     categoryId: form.categoryId,
     active: form.active,
     moduleSlug: form.moduleSlug || null,
+    sku: form.sku.trim().toLowerCase(),
+    appGrants: form.sku.trim() ? form.appGrants : [],
     videoUrls: videoUrls.value.filter(u => u.trim() !== ''),
   }
 
