@@ -378,6 +378,14 @@ onMounted(async () => {
       }
     } catch (_) {}
   }
+
+  // Link com cupom (?cupom=): preenche e aplica sobre o preço do funil.
+  const linkCoupon = parseCouponParam(route.query.cupom)
+  if (linkCoupon && funnel.value && !coupon.applied.value) {
+    coupon.code.value = linkCoupon
+    coupon.show.value = true
+    await coupon.apply()
+  }
 })
 </script>
 

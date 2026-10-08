@@ -2,8 +2,11 @@
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
 
     <!-- Carrinho vazio -->
-    <div v-if="cart.items.length === 0 && !payment.paymentResult.value" class="text-center py-20">
-      <p class="text-steel mb-4">Seu carrinho está vazio.</p>
+    <div v-if="linkLoading" class="text-center py-20">
+      <i class="pi pi-spin pi-spinner text-2xl text-teal" />
+    </div>
+    <div v-else-if="cart.items.length === 0 && !payment.paymentResult.value" class="text-center py-20">
+      <p class="text-steel mb-4">{{ linkError || 'Seu carrinho está vazio.' }}</p>
       <NuxtLink to="/loja" class="btn-primary">Ir para a loja</NuxtLink>
     </div>
 
@@ -137,10 +140,14 @@
 </template>
 
 <script setup lang="ts">
+import type { Product } from '~/types'
+
 definePageMeta({ layout: 'checkout' })
 
 const auth = useAuthStore()
 const cart = useCartStore()
+const route = useRoute()
+const router = useRouter()
 const { $fetch: apiFetch } = useApi()
 const { maintenance, maintenanceMessage, cardEnabled } = useCheckoutStatus()
 
@@ -169,6 +176,40 @@ const payment = usePayment({
   onSubmitted: () => cart.clear(),
 })
 
+// Link de compra (?produto=&qtd=&cupom=): carrega o produto e o cupom pro carrinho.
+const linkLoading = ref(parseProductParam(route.query.produto) !== null)
+const linkError = ref('')
+
+async function loadProductFromLink() {
+  const id = parseProductParam(route.query.produto)
+  if (id === null) return
+  try {
+    const product = await apiFetch<Product>(`/api/products/${id}`)
+    if (!product.active) throw new Error('produto inativo')
+    // O link manda no carrinho: é a compra que quem enviou o link quis.
+    cart.clear()
+    cart.add(product)
+    const qty = parseQuantityParam(route.query.qtd)
+    if (qty > 1) cart.updateQuantity(product.id, qty)
+  } catch {
+    linkError.value = 'Este link de compra não está mais disponível.'
+  } finally {
+    linkLoading.value = false
+  }
+  // Produto e quantidade já foram usados: sem isso, recarregar a página refaria o
+  // carrinho. O cupom fica na URL (aplicá-lo de novo é inofensivo).
+  const { produto, qtd, ...rest } = route.query
+  await router.replace({ query: rest })
+}
+
+async function applyCouponFromLink() {
+  const code = parseCouponParam(route.query.cupom)
+  if (!code || coupon.applied.value || cart.items.length === 0) return
+  coupon.code.value = code
+  coupon.show.value = true
+  await coupon.apply()
+}
+
 const cpfError = ref(false)
 
 function validateCpf() {
@@ -187,6 +228,8 @@ watch(() => form.phone, (val) => {
 })
 
 onMounted(async () => {
+  await loadProductFromLink()
+
   if (payment.recoveryToken.value) {
     try {
       const recovered = await apiFetch<any>(`/api/orders/recover/${payment.recoveryToken.value}`)
@@ -209,6 +252,8 @@ onMounted(async () => {
       }
     } catch (_) {}
   }
+
+  await applyCouponFromLink()
 
   if (cart.items.length === 0) return
 
