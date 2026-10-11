@@ -247,14 +247,17 @@ const totalPages = ref(0)
 const currentPage = ref(0)
 
 const filters = reactive({
-  from: isoDaysAgo(29),
+  from: isoDaysAgo(0),
   to: isoDaysAgo(0),
 })
 
 function isoDaysAgo(days: number): string {
   const d = new Date()
   d.setDate(d.getDate() - days)
-  return d.toISOString().slice(0, 10)
+  // data local: toISOString() usa UTC e, à noite no Brasil, já devolveria amanhã
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${mm}-${dd}`
 }
 
 function dateParams() {
