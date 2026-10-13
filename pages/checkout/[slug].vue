@@ -54,18 +54,18 @@
             <div class="grid sm:grid-cols-2 gap-4">
               <div class="sm:col-span-2">
                 <label class="checkout-label">Nome completo *</label>
-                <input v-model="form.name" type="text" class="checkout-input" placeholder="Seu nome completo" />
+                <input v-model="form.name" type="text" class="checkout-input" placeholder="Seu nome completo" @focus="onFieldFocus('Nome')" @blur="onFieldBlur('Nome', form.name.trim().length > 1)" />
               </div>
               <div>
                 <label class="checkout-label">Email *</label>
-                <input v-model="form.email" type="email" class="checkout-input" placeholder="seu@email.com" />
+                <input v-model="form.email" type="email" class="checkout-input" placeholder="seu@email.com" @focus="onFieldFocus('Email')" @blur="onFieldBlur('Email', form.email.includes('@'))" />
                 <p class="text-xs text-steel mt-1">Os materiais serão enviados para este email.</p>
               </div>
               <div>
                 <label class="checkout-label">Telefone</label>
                 <div class="flex">
                   <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-sand-200 bg-sand-100 text-steel text-sm select-none">+55</span>
-                  <input v-model="form.phone" type="tel" class="checkout-input !rounded-l-none" placeholder="(00) 00000-0000" maxlength="15" />
+                  <input v-model="form.phone" type="tel" class="checkout-input !rounded-l-none" placeholder="(00) 00000-0000" maxlength="15" @focus="onFieldFocus('Telefone')" @blur="onFieldBlur('Telefone', phoneFilled())" />
                 </div>
               </div>
               <div class="sm:col-span-2">
@@ -77,6 +77,7 @@
                   :class="['checkout-input', cpfError ? 'border-red-400 focus:ring-red-300 focus:border-red-400' : '']"
                   placeholder="000.000.000-00"
                   maxlength="14"
+                  @focus="onFieldFocus('CPF')"
                   @blur="validateCpf"
                 />
                 <p v-if="cpfError" class="mt-1 text-xs text-red-500 flex items-center gap-1">
@@ -319,7 +320,33 @@ const cpfError = ref(false)
 function validateCpf() {
   const digits = onlyDigits(form.cpf)
   cpfError.value = digits.length === 11 && !isValidCpf(form.cpf)
+  if (digits.length === 0) return
+  if (digits.length < 11) tracking.trackCustomOnce('Form_CPF_Incompleto')
+  else if (cpfError.value) tracking.trackCustomOnce('Form_CPF_Invalido')
+  else tracking.trackCustomOnce('Form_Preenchido_CPF')
 }
+
+// Funil do formulário: quem tocou em cada campo e quem terminou de preencher.
+const tracking = useTracking()
+function onFieldFocus(field: string) {
+  tracking.trackCustomOnce(`Form_Foco_${field}`)
+}
+function phoneFilled() {
+  return onlyDigits(form.phone).length >= 10
+}
+function onFieldBlur(field: string, filled: boolean) {
+  if (filled) tracking.trackCustomOnce(`Form_Preenchido_${field}`)
+}
+
+watch(() => payment.isFormValid.value, (valid) => {
+  if (valid) tracking.trackCustomOnce('Form_Valido')
+})
+watch(() => payment.submitting.value, (submitting) => {
+  if (submitting) tracking.trackCustomOnce('Form_Enviar')
+})
+watch(() => payment.error.value, (message) => {
+  if (message) tracking.trackCustomOnce('Form_Erro')
+})
 
 watch(() => form.cpf, (val) => {
   const masked = maskCpf(val)
@@ -342,6 +369,7 @@ function toggleBump(id: number) {
     selectedBumps.delete(id)
   } else {
     selectedBumps.add(id)
+    tracking.trackCustomOnce('Form_Bump')
   }
 }
 
@@ -354,10 +382,10 @@ onMounted(async () => {
     }
     funnel.value = data
 
-    const { initiateCheckout } = useTracking()
-    initiateCheckout(data.product.funnelPrice, [
-      { id: data.product.id, name: data.product.name, price: data.product.funnelPrice, quantity: 1 },
-    ])
+    // O InitiateCheckout deste funil é o do clique na LP (com eventID). Disparar
+    // outro aqui dobrava o evento; o checkout aberto vai como evento próprio.
+    tracking.resetCustomEvents()
+    tracking.trackCustomOnce('CheckoutAberto', { value: data.product.funnelPrice, currency: 'BRL' })
   } catch {
     funnel.value = null
   } finally {

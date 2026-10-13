@@ -20,6 +20,9 @@ function getAddPaymentInfoEventId(): string {
   return addPaymentInfoEventId
 }
 
+// Eventos customizados do checkout disparam uma vez por visita.
+const customEventsSent = new Set<string>()
+
 export function useTracking() {
   function fbq(...args: any[]) {
     if (typeof window !== 'undefined' && window.fbq) {
@@ -31,6 +34,17 @@ export function useTracking() {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag(...args)
     }
+  }
+
+  /** Evento customizado do pixel, uma vez por visita ao checkout. */
+  function trackCustomOnce(name: string, params: Record<string, unknown> = {}) {
+    if (customEventsSent.has(name)) return
+    customEventsSent.add(name)
+    fbq('trackCustom', name, params)
+  }
+
+  function resetCustomEvents() {
+    customEventsSent.clear()
   }
 
   function pageView() {
@@ -116,6 +130,7 @@ export function useTracking() {
 
   return {
     pageView, viewContent, addToCart, initiateCheckout, addPaymentInfo, purchase,
+    trackCustomOnce, resetCustomEvents,
     getAddPaymentInfoEventId,
   }
 }
