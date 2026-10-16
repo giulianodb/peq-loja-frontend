@@ -69,7 +69,7 @@
 
       <div class="border-t border-primary-700 mt-12 pt-8 text-center text-xs text-primary-400">
         <p>&copy; {{ new Date().getFullYear() }} Pequenas Trilhas&reg;. Todos os direitos reservados.</p>
-        <p class="mt-1">CNPJ: 55.312.007/0001-30</p>
+        <p class="mt-1">Dúvidas? <a href="mailto:suporte@pequenastrilhas.com.br" class="underline">suporte@pequenastrilhas.com.br</a></p>
       </div>
     </div>
   </footer>
