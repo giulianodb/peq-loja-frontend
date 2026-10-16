@@ -212,7 +212,7 @@
           >
             <i v-if="payment.submitting.value" class="pi pi-spin pi-spinner" />
             <i v-else class="pi pi-lock" />
-            {{ payment.submitting.value ? 'Processando...' : `Finalizar Compra  ${formatPrice(orderTotal)}` }}
+            {{ payment.submitting.value ? 'Processando...' : `${payment.paymentMethod.value === 'pix' ? 'Pagar com Pix' : 'Finalizar Compra'}  ${formatPrice(orderTotal)}` }}
           </button>
 
           <CheckoutTrustBar />

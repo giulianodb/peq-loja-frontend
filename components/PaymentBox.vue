@@ -6,7 +6,7 @@
     </div>
 
     <!-- Tabs: Pix é o método padrão -->
-    <div v-if="cardEnabled" class="flex border border-sand-200 rounded-xl overflow-hidden mb-6">
+    <div class="flex border border-sand-200 rounded-xl overflow-hidden mb-6">
       <button
         @click="paymentMethod = 'pix'"
         :class="['flex-1 py-3 px-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors', paymentMethod === 'pix' ? 'bg-teal text-white' : 'bg-white text-primary-700 hover:bg-sand-100']"
