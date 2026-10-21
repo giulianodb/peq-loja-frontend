@@ -23,8 +23,8 @@
                  : paymentMethod === 'credit_card' ? 'bg-teal text-white' : 'bg-white text-primary-700 hover:bg-sand-100']"
       >
         <i class="pi pi-credit-card" />
-        {{ cardTabLabel }}
-        <span v-if="!cardEnabled" class="text-[10px] uppercase tracking-wide bg-white/70 text-steel rounded-full px-1.5 py-0.5">
+        {{ cardEnabled ? cardTabLabel : 'Cartão' }}
+        <span v-if="!cardEnabled" class="text-[10px] uppercase tracking-wide bg-white/70 text-steel rounded-full px-1.5 py-0.5 whitespace-nowrap">
           em breve
         </span>
       </button>
