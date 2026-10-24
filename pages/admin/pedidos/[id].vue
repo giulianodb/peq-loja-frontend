@@ -101,6 +101,10 @@
                 <dd class="font-medium text-gray-900">{{ customerAccess.lastLoginAt ? formatDate(customerAccess.lastLoginAt) : '—' }}</dd>
               </div>
               <div>
+                <dt class="text-gray-500">Dispositivo do último login</dt>
+                <dd class="font-medium text-gray-900">{{ loginDeviceLabel(customerAccess.lastLoginDevice) }}</dd>
+              </div>
+              <div>
                 <dt class="text-gray-500">IP do último login</dt>
                 <dd class="font-medium text-gray-900 break-all">{{ customerAccess.lastLoginIp || '—' }}</dd>
               </div>
@@ -311,8 +315,12 @@ interface CustomerAccess {
   tracked: boolean
   lastLoginAt: string | null
   lastLoginIp: string | null
+  lastLoginDevice: 'APP' | 'NAVEGADOR' | null
   loginCount: number
 }
+
+const loginDeviceLabel = (device: CustomerAccess['lastLoginDevice']) =>
+  device === 'APP' ? 'Aplicativo' : device === 'NAVEGADOR' ? 'Navegador' : '—'
 
 const order = ref<Order | null>(null)
 const materials = ref<OrderMaterialsGroup[]>([])
