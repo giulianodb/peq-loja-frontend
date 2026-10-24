@@ -40,12 +40,6 @@
       </div>
       <h1 v-else class="font-serif text-2xl text-teal text-center mb-8">Finalizar Compra</h1>
 
-      <!-- Mobile: o resumo fica depois dos bumps, então confirma produto e preço já no topo -->
-      <div class="lg:hidden flex items-center justify-between gap-3 bg-white rounded-xl border border-sand-200 px-4 py-3 mb-6">
-        <p class="text-sm text-primary-800 min-w-0 truncate">{{ funnel.product.name }}</p>
-        <span class="text-sm font-bold text-coral flex-shrink-0">{{ formatPrice(funnel.product.funnelPrice) }}</span>
-      </div>
-
       <div class="grid lg:grid-cols-5 gap-8">
 
         <!-- Bloco 1: Dados + Bumps -->
