@@ -64,6 +64,7 @@
                   <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-sand-200 bg-sand-100 text-steel text-sm select-none">+55</span>
                   <input v-model="form.phone" type="tel" class="checkout-input !rounded-l-none" placeholder="(00) 00000-0000" maxlength="15" @focus="onFieldFocus('Telefone')" @blur="onFieldBlur('Telefone', phoneFilled())" />
                 </div>
+                <p class="text-xs text-steel mt-1">Os materiais também serão enviados por WhatsApp para este número.</p>
               </div>
               <div class="sm:col-span-2">
                 <label class="checkout-label">CPF *</label>
